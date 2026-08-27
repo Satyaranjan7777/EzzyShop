@@ -99,10 +99,6 @@ export const Addresses = () => {
     }
   };
 
-  if (isLoading && addresses.length === 0) {
-    return <Loader fullScreen text="Loading saved addresses..." />;
-  }
-
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Header */}
@@ -126,7 +122,11 @@ export const Addresses = () => {
       </div>
 
       {/* Addresses Grid or Empty State */}
-      {addresses.length === 0 ? (
+      {isLoading && addresses.length === 0 ? (
+        <div className="py-16">
+          <Loader text="Loading saved addresses..." />
+        </div>
+      ) : addresses.length === 0 ? (
         <EmptyState
           icon={MapPin}
           title="No Addresses Saved Yet"

@@ -5,6 +5,9 @@ import * as z from "zod";
 import Input from "../common/Input";
 import Button from "../common/Button";
 
+// Validates exactly 10-digit Indian mobile number starting with 6, 7, 8, or 9
+const INDIAN_10_DIGIT_PHONE_REGEX = /^[6-9]\d{9}$/;
+
 const addressSchema = z.object({
   fullName: z
     .string()
@@ -12,7 +15,12 @@ const addressSchema = z.object({
     .max(50, "Full name cannot exceed 50 characters"),
   phone: z
     .string()
-    .regex(/^[0-9+\-\s]{7,15}$/, "Valid phone number is required (7-15 digits)"),
+    .min(1, "Phone number is required")
+    .length(10, "Mobile number must be exactly 10 digits")
+    .regex(
+      INDIAN_10_DIGIT_PHONE_REGEX,
+      "Please enter a valid Indian mobile number starting with 6, 7, 8, or 9"
+    ),
   addressLine: z
     .string()
     .min(3, "Address line must be at least 3 characters long"),
@@ -20,7 +28,7 @@ const addressSchema = z.object({
   state: z.string().min(2, "State is required and must be at least 2 characters"),
   pincode: z
     .string()
-    .min(3, "Pincode is required and must be at least 3 digits"),
+    .regex(/^[1-9][0-9]{5}$/, "Please enter a valid 6-digit Indian PIN code"),
   country: z.string().default("India"),
   isDefault: z.boolean().default(false),
 });
@@ -31,15 +39,21 @@ export const AddressForm = ({
   onCancel,
   isLoading = false,
 }) => {
+  // Extract 10 digits if initial phone has +91 or spaces
+  const cleanInitialPhone = initialData?.phone
+    ? initialData.phone.replace(/\D/g, "").slice(-10)
+    : "";
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(addressSchema),
     defaultValues: {
       fullName: initialData?.fullName || "",
-      phone: initialData?.phone || "",
+      phone: cleanInitialPhone,
       addressLine: initialData?.addressLine || "",
       city: initialData?.city || "",
       state: initialData?.state || "",
@@ -49,8 +63,18 @@ export const AddressForm = ({
     },
   });
 
+  const handleFormSubmit = (data) => {
+    // Clean and normalize phone with +91 prefix
+    const cleanDigits = data.phone.replace(/\D/g, "").slice(-10);
+    const formattedData = {
+      ...data,
+      phone: `+91 ${cleanDigits}`,
+    };
+    onSubmit(formattedData);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           label="Full Name"
@@ -61,11 +85,27 @@ export const AddressForm = ({
         />
 
         <Input
-          label="Phone Number"
+          label="Mobile Number"
           required
-          placeholder="e.g. 9876543210"
+          leftAddon={
+            <span className="flex items-center gap-1">
+              <span>🇮🇳</span>
+              <span>+91</span>
+            </span>
+          }
+          type="tel"
+          inputMode="numeric"
+          maxLength={10}
+          placeholder="9876543210"
+          helperText="10-digit Indian mobile number"
           error={errors.phone?.message}
-          {...register("phone")}
+          {...register("phone", {
+            onChange: (e) => {
+              // Restrict to digits only and maximum 10 characters
+              const onlyNums = e.target.value.replace(/\D/g, "").slice(0, 10);
+              setValue("phone", onlyNums, { shouldValidate: true });
+            },
+          })}
         />
       </div>
 

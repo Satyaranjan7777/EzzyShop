@@ -5,6 +5,13 @@ import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { useAuthStore } from "./store/auth.store";
 import { useCartStore } from "./store/cart.store";
+import useAdminOrderPolling from "./hooks/useAdminOrderPolling";
+
+// Global background poller for live admin alerts
+const GlobalAdminNotifier = () => {
+  useAdminOrderPolling();
+  return null;
+};
 
 export function App() {
   const getCurrentUser = useAuthStore((state) => state.getCurrentUser);
@@ -22,6 +29,8 @@ export function App() {
 
   return (
     <BrowserRouter>
+      {/* Global Admin Order & Cancellation Poller */}
+      <GlobalAdminNotifier />
       {/* Global Scroll Restoration and Floating Back-to-Top FAB */}
       <ScrollToTop />
       <AppRoutes />

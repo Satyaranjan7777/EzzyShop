@@ -10,13 +10,13 @@ import {
   X,
   ChevronDown,
   LayoutDashboard,
-  Store,
   Search,
-  Sparkles,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { useCartStore } from "../../store/cart.store";
 import { useUIStore } from "../../store/ui.store";
+import logoImg from "../../assets/logo.png";
+import AdminNotificationBell from "../admin/AdminNotificationBell";
 
 export const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -85,18 +85,11 @@ export const Navbar = () => {
               to="/"
               className="flex items-center gap-3 group focus:outline-none shrink-0"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
-                <Store className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 font-heading leading-tight">
-                  Ezzy<span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Shop</span>
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-0.5 flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5 text-indigo-500" />
-                  Premium Store
-                </span>
-              </div>
+              <img
+                src={logoImg}
+                alt="EzzyShop"
+                className="h-10 sm:h-12 w-auto object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+              />
             </Link>
 
             {/* Desktop Navigation links */}
@@ -129,6 +122,9 @@ export const Navbar = () => {
 
           {/* Right Action Icons & User Dropdown */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Live Admin Notification Bell for New Orders */}
+            {isAuthenticated && isAdmin && <AdminNotificationBell />}
+
             {/* Cart Icon with Counter */}
             <Link
               to="/cart"

@@ -6,7 +6,18 @@ export const Loader = ({
   text = "Loading...",
   fullScreen = false,
   className = "",
+  showColdStartNotice = true,
 }) => {
+  const [isSlow, setIsSlow] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!showColdStartNotice) return;
+    const timer = setTimeout(() => {
+      setIsSlow(true);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [showColdStartNotice]);
+
   const sizeMap = {
     sm: "w-5 h-5",
     md: "w-8 h-8",
@@ -19,6 +30,11 @@ export const Loader = ({
       {text && (
         <p className="text-sm font-medium text-slate-600 animate-pulse">
           {text}
+        </p>
+      )}
+      {isSlow && (
+        <p className="text-xs text-slate-400 max-w-xs animate-in fade-in duration-300">
+          Connecting to backend server... (It may take a moment if the server is warming up)
         </p>
       )}
     </div>

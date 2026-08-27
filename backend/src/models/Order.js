@@ -115,6 +115,24 @@ const orderSchema = new mongoose.Schema(
       ],
       default: "pending",
     },
+    cancellationReason: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: [250, "Cancellation reason cannot exceed 250 characters"],
+    },
+    cancelledAt: {
+      type: Date,
+      default: null,
+    },
+    cancelledBy: {
+      type: String,
+      enum: {
+        values: ["user", "admin"],
+        message: "{VALUE} is not a valid cancellation actor",
+      },
+      default: null,
+    },
   },
   {
     timestamps: true,

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
@@ -250,13 +251,192 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 });
 
 /**
+ * Shared, concurrency-safe helper to execute order cancellation and inventory restoration
+ * @param {Object} params
+ * @param {string} params.orderId - The Order ID
+ * @param {string} params.actor - 'user' | 'admin'
+ * @param {string} [params.reason] - Optional cancellation reason
+ * @param {string|mongoose.Types.ObjectId} [params.userId] - User ID for customer ownership enforcement
+ * @returns {Promise<Object>} Updated Order document
+ */
+export const executeOrderCancellation = async ({
+  orderId,
+  actor,
+  reason = null,
+  userId = null,
+}) => {
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    throw new ApiError(400, "Invalid order ID format");
+  }
+
+  // 1. Initial lookup to provide precise, user-friendly error codes
+  const existingOrder = await Order.findById(orderId);
+  if (!existingOrder) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  // 2. Authorization check if customer
+  if (actor === "user") {
+    const isOwner =
+      existingOrder.user._id
+        ? existingOrder.user._id.toString() === userId.toString()
+        : existingOrder.user.toString() === userId.toString();
+
+    if (!isOwner) {
+      throw new ApiError(403, "Access denied. You can only cancel your own orders.");
+    }
+
+    // Customer can only cancel pending or confirmed
+    if (existingOrder.orderStatus === "cancelled") {
+      throw new ApiError(400, "Order is already cancelled");
+    }
+
+    if (!["pending", "confirmed"].includes(existingOrder.orderStatus)) {
+      throw new ApiError(
+        400,
+        "Order cannot be cancelled at its current status."
+      );
+    }
+  } else if (actor === "admin") {
+    if (existingOrder.orderStatus === "cancelled") {
+      throw new ApiError(400, "Cannot change status of an already cancelled order");
+    }
+    if (existingOrder.orderStatus === "delivered") {
+      throw new ApiError(400, "Cannot change status of an already delivered order");
+    }
+  }
+
+  const trimmedReason =
+    typeof reason === "string" && reason.trim() !== ""
+      ? reason.trim().slice(0, 250)
+      : null;
+
+  const allowedPriorStatuses =
+    actor === "user"
+      ? ["pending", "confirmed"]
+      : ["pending", "confirmed", "processing", "shipped"];
+
+  // 3. Attempt MongoDB Transaction if supported by replica set
+  let session = null;
+  let useTransaction = false;
+
+  try {
+    session = await mongoose.startSession();
+    session.startTransaction();
+    useTransaction = true;
+  } catch {
+    // If standalone Mongo environment without replica set transactions
+    session = null;
+    useTransaction = false;
+  }
+
+  try {
+    const sessionOpts = useTransaction ? { session } : {};
+
+    // Atomically transition the order to cancelled matching only allowed prior statuses
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: orderId,
+        orderStatus: { $in: allowedPriorStatuses },
+        ...(actor === "user" && { user: userId }),
+      },
+      {
+        $set: {
+          orderStatus: "cancelled",
+          cancellationReason: trimmedReason,
+          cancelledAt: new Date(),
+          cancelledBy: actor,
+          "payment.status": "failed",
+        },
+      },
+      {
+        returnDocument: "after",
+        ...sessionOpts,
+      }
+    )
+      .populate("user", "name email")
+      .populate("items.product", "title slug images");
+
+    if (!updatedOrder) {
+      throw new ApiError(
+        400,
+        "Order cannot be cancelled at its current status or was already updated."
+      );
+    }
+
+    // Restore stock exactly once for every purchased item
+    for (const item of updatedOrder.items) {
+      const productId = item.product?._id || item.product;
+      await Product.findByIdAndUpdate(
+        productId,
+        { $inc: { stock: item.quantity } },
+        sessionOpts
+      );
+    }
+
+    if (useTransaction && session) {
+      await session.commitTransaction();
+    }
+
+    return updatedOrder;
+  } catch (error) {
+    if (useTransaction && session) {
+      await session.abortTransaction();
+    }
+    throw error;
+  } finally {
+    if (session) {
+      session.endSession();
+    }
+  }
+};
+
+/**
+ * @desc    Cancel order (Customer)
+ * @route   PATCH /api/v1/orders/:id/cancel
+ * @access  Private
+ */
+export const cancelOrder = asyncHandler(async (req, res) => {
+  const { reason } = req.body || {};
+
+  const order = await executeOrderCancellation({
+    orderId: req.params.id,
+    actor: "user",
+    reason,
+    userId: req.user._id,
+  });
+
+  return new ApiResponse(
+    200,
+    "Order cancelled successfully",
+    order
+  ).send(res);
+});
+
+/**
  * @desc    Update order status (Admin only)
  * @route   PATCH /api/v1/orders/:id/status
  * @access  Private/Admin
  */
 export const updateOrderStatus = asyncHandler(async (req, res) => {
-  const { orderStatus } = req.body;
+  const { orderStatus, reason } = req.body;
 
+  // Handle cancellation via shared concurrency-safe logic
+  if (orderStatus === "cancelled") {
+    const cancelledOrder = await executeOrderCancellation({
+      orderId: req.params.id,
+      actor: "admin",
+      reason: reason || "Cancelled by administrator",
+    });
+
+    return new ApiResponse(
+      200,
+      "Order status updated to 'cancelled' successfully",
+      cancelledOrder
+    ).send(res);
+  }
+
+  // Non-cancellation status transition logic
   const order = await Order.findById(req.params.id);
   if (!order) {
     throw new ApiError(404, "Order not found");
@@ -276,16 +456,6 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 
   order.orderStatus = orderStatus;
 
-  // If order is cancelled, restore stock for each product
-  if (orderStatus === "cancelled" && previousStatus !== "cancelled") {
-    for (const item of order.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: item.quantity },
-      });
-    }
-    order.payment.status = "failed";
-  }
-
   // If order is delivered and payment method is COD, mark payment as completed
   if (orderStatus === "delivered" && order.payment.method === "COD") {
     order.payment.status = "completed";
@@ -293,9 +463,13 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 
   await order.save();
 
+  const populatedOrder = await Order.findById(order._id)
+    .populate("user", "name email")
+    .populate("items.product", "title slug images");
+
   return new ApiResponse(
     200,
     `Order status updated to '${orderStatus}' successfully`,
-    order
+    populatedOrder
   ).send(res);
 });

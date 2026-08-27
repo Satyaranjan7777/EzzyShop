@@ -28,10 +28,6 @@ export const Cart = () => {
     }
   };
 
-  if (isLoading && (!items || items.length === 0)) {
-    return <Loader fullScreen text="Loading your shopping cart..." />;
-  }
-
   const hasItems = items && items.length > 0;
 
   return (
@@ -47,7 +43,9 @@ export const Cart = () => {
             Shopping Cart
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
-            {hasItems
+            {isLoading
+              ? "Updating your shopping cart..."
+              : hasItems
               ? `You currently have ${summary.totalItems} item(s) in your bag`
               : "Your shopping bag is currently empty"}
           </p>
@@ -57,7 +55,7 @@ export const Cart = () => {
           <button
             type="button"
             onClick={() => setShowClearConfirm(true)}
-            className="flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/80 px-4 py-2.5 rounded-2xl transition-colors shadow-xs"
+            className="flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/80 px-4 py-2.5 rounded-2xl transition-colors shadow-xs cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
             Clear Cart
@@ -66,7 +64,11 @@ export const Cart = () => {
       </div>
 
       {/* Cart Content */}
-      {!hasItems ? (
+      {isLoading && (!items || items.length === 0) ? (
+        <div className="py-16">
+          <Loader text="Loading your shopping bag..." />
+        </div>
+      ) : !hasItems ? (
         <EmptyState
           icon={ShoppingBag}
           title="Your Shopping Cart is Empty"

@@ -59,6 +59,55 @@ describe("Address Endpoints (/api/v1/addresses)", () => {
     expect(res.body.success).toBe(false);
   });
 
+  it("POST /api/v1/addresses - should reject invalid phone numbers (400)", async () => {
+    // Number starting with 1 (not a valid Indian mobile number)
+    const res1 = await request(app)
+      .post("/api/v1/addresses")
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({
+        fullName: "Invalid Phone Tester",
+        phone: "1234567890",
+        addressLine: "123 Test St",
+        city: "Pune",
+        state: "Maharashtra",
+        pincode: "411001",
+      });
+    expect(res1.statusCode).toBe(400);
+    expect(res1.body.success).toBe(false);
+
+    // Number with too few digits
+    const res2 = await request(app)
+      .post("/api/v1/addresses")
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({
+        fullName: "Invalid Phone Tester",
+        phone: "98765",
+        addressLine: "123 Test St",
+        city: "Pune",
+        state: "Maharashtra",
+        pincode: "411001",
+      });
+    expect(res2.statusCode).toBe(400);
+    expect(res2.body.success).toBe(false);
+  });
+
+  it("POST /api/v1/addresses - should accept valid 10-digit Indian phone without +91 prefix", async () => {
+    const res = await request(app)
+      .post("/api/v1/addresses")
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({
+        fullName: "Valid 10 Digit Phone",
+        phone: "9876543210",
+        addressLine: "456 Market St",
+        city: "Bangalore",
+        state: "Karnataka",
+        pincode: "560001",
+        country: "India",
+      });
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
+  });
+
   it("GET /api/v1/addresses - should get list of user addresses", async () => {
     const res = await request(app)
       .get("/api/v1/addresses")

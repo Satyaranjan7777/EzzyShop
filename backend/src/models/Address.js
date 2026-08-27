@@ -17,7 +17,10 @@ const addressSchema = new mongoose.Schema(
       type: String,
       required: [true, "Phone number is required"],
       trim: true,
-      match: [/^[0-9+\-\s]{7,15}$/, "Please provide a valid phone number"],
+      match: [
+        /^(?:(?:\+|0{0,2})91[\s\-]?)?(?:0[\s\-]?)?[6-9](?:[\s\-]?\d){9}$/,
+        "Please provide a valid Indian mobile number (+91 or 10-digits starting with 6-9)",
+      ],
     },
     addressLine: {
       type: String,

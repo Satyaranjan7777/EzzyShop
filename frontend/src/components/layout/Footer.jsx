@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Store,
   ShieldCheck,
   Truck,
   RotateCcw,
@@ -16,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import logoImg from "../../assets/logo.png";
 
 export const Footer = () => {
   const [emailInput, setEmailInput] = useState("");
@@ -153,17 +153,11 @@ export const Footer = () => {
           {/* Brand & Contact Information (2 cols on lg) */}
           <div className="lg:col-span-2 space-y-5">
             <Link to="/" className="flex items-center gap-2.5 group focus:outline-none w-fit">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform">
-                <Store className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-heading">
-                  Ezzy<span className="text-indigo-600">Shop</span>
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
-                  Premium Store
-                </span>
-              </div>
+              <img
+                src={logoImg}
+                alt="EzzyShop"
+                className="h-10 sm:h-12 w-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
+              />
             </Link>
 
             <p className="text-sm text-slate-600 leading-relaxed max-w-sm">

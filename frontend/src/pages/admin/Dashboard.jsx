@@ -78,7 +78,11 @@ export const Dashboard = () => {
   }, []);
 
   if (isLoading) {
-    return <Loader fullScreen text="Loading administrative dashboard..." />;
+    return (
+      <div className="py-24">
+        <Loader text="Loading administrative dashboard..." />
+      </div>
+    );
   }
 
   return (

@@ -46,6 +46,16 @@ export const orderService = {
   async updateOrderStatus(id, orderStatus) {
     return await apiClient.patch(`/orders/${id}/status`, { orderStatus });
   },
+
+  /**
+   * Cancel order (Customer)
+   * @param {string} id
+   * @param {string} [reason]
+   * @returns {Promise<{ success: boolean, message: string, data: Object }>}
+   */
+  async cancelOrder(id, reason = "") {
+    return await apiClient.patch(`/orders/${id}/cancel`, { reason });
+  },
 };
 
 export default orderService;

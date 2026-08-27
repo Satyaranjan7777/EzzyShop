@@ -39,10 +39,6 @@ export const Orders = () => {
     fetchOrders(currentPage);
   }, [currentPage]);
 
-  if (isLoading && orders.length === 0) {
-    return <Loader fullScreen text="Loading your order history..." />;
-  }
-
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Header */}
@@ -60,7 +56,11 @@ export const Orders = () => {
       </div>
 
       {/* Orders List or Empty State */}
-      {orders.length === 0 ? (
+      {isLoading && orders.length === 0 ? (
+        <div className="py-16">
+          <Loader text="Loading your order history..." />
+        </div>
+      ) : orders.length === 0 ? (
         <EmptyState
           icon={Package}
           title="No Orders Placed Yet"

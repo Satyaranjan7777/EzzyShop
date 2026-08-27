@@ -29,9 +29,17 @@ export const getErrorMessage = (error, fallback = "An unexpected error occurred.
         return "This resource already exists.";
       case 500:
         return "Server error occurred. Please try again later.";
+      case 502:
+      case 503:
+      case 504:
+        return "The backend server is warming up or temporarily unavailable. Please try again in a few moments.";
       default:
         break;
     }
+  }
+
+  if (error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout")) {
+    return "Server is taking longer than usual to respond (it may be waking up). Please retry in a few moments.";
   }
 
   if (error.message && error.message !== "Network Error") {
@@ -39,7 +47,7 @@ export const getErrorMessage = (error, fallback = "An unexpected error occurred.
   }
 
   if (error.message === "Network Error") {
-    return "Cannot connect to server. Please ensure the backend is running.";
+    return "Cannot connect to server. Please ensure the backend is running and reachable.";
   }
 
   return fallback;

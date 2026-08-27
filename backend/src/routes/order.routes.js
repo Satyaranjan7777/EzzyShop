@@ -5,6 +5,7 @@ import {
   getOrderById,
   getAllOrders,
   updateOrderStatus,
+  cancelOrder,
 } from "../controllers/order.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { adminOnly } from "../middleware/role.middleware.js";
@@ -12,6 +13,7 @@ import { validate } from "../middleware/validate.middleware.js";
 import {
   createOrderValidator,
   updateOrderStatusValidator,
+  cancelOrderValidator,
 } from "../validators/order.validator.js";
 
 const router = express.Router();
@@ -22,6 +24,7 @@ router.use(authenticate);
 // User order endpoints
 router.post("/", validate(createOrderValidator), createOrder);
 router.get("/my-orders", getMyOrders);
+router.patch("/:id/cancel", validate(cancelOrderValidator), cancelOrder);
 
 // Admin-only endpoints
 router.get("/", adminOnly, getAllOrders);

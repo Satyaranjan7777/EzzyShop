@@ -4,12 +4,15 @@ import { TOKEN_STORAGE_KEY } from "../utils/constants";
 import { getErrorMessage } from "../utils/helpers";
 import toast from "react-hot-toast";
 
+const initialToken =
+  typeof window !== "undefined" ? sessionStorage.getItem(TOKEN_STORAGE_KEY) : null;
+
 export const useAuthStore = create((set, get) => ({
   user: null,
-  token: (typeof window !== "undefined" ? sessionStorage.getItem(TOKEN_STORAGE_KEY) : null),
+  token: initialToken,
   isAuthenticated: false,
-  isLoading: true, // initial auth check loading state
-  isInitialized: false,
+  isLoading: Boolean(initialToken), // only loading initially if a token exists to be verified
+  isInitialized: !initialToken, // immediately initialized for guest visitors with no token
 
   /**
    * Session Restoration: check token in current tab's sessionStorage and load user profile

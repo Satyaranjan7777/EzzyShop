@@ -67,7 +67,53 @@ export const ProductDetails = () => {
   }, [id]);
 
   if (isLoading) {
-    return <Loader fullScreen text="Loading product details..." />;
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 animate-pulse">
+        {/* Breadcrumb Skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="h-4 w-32 bg-slate-200 rounded-lg" />
+          <div className="h-6 w-24 bg-slate-200 rounded-full" />
+        </div>
+
+        {/* Main Product Layout Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          {/* Left: Images Gallery Skeleton */}
+          <div className="space-y-4">
+            <div className="aspect-square w-full rounded-3xl bg-slate-200" />
+            <div className="flex items-center gap-3">
+              <div className="w-20 h-20 rounded-2xl bg-slate-200" />
+              <div className="w-20 h-20 rounded-2xl bg-slate-200" />
+              <div className="w-20 h-20 rounded-2xl bg-slate-200" />
+            </div>
+          </div>
+
+          {/* Right: Info & Actions Skeleton */}
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="h-8 w-3/4 bg-slate-200 rounded-xl" />
+              <div className="h-6 w-1/3 bg-slate-200 rounded-lg" />
+            </div>
+
+            <div className="h-24 w-full bg-slate-200 rounded-3xl" />
+
+            <div className="space-y-2">
+              <div className="h-4 w-28 bg-slate-200 rounded" />
+              <div className="h-4 w-full bg-slate-200 rounded" />
+              <div className="h-4 w-5/6 bg-slate-200 rounded" />
+              <div className="h-4 w-2/3 bg-slate-200 rounded" />
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 space-y-4">
+              <div className="h-10 w-36 bg-slate-200 rounded-2xl" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="h-14 bg-slate-200 rounded-2xl" />
+                <div className="h-14 bg-slate-200 rounded-2xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error || !product) {

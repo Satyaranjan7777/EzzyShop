@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import { Menu, Store } from "lucide-react";
 import AdminSidebar from "../admin/AdminSidebar";
+import AdminNotificationBell from "../admin/AdminNotificationBell";
 import { useUIStore } from "../../store/ui.store";
 import useAuth from "../../hooks/useAuth";
 
@@ -47,7 +48,10 @@ export const AdminLayout = () => {
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Live Order Notification Bell */}
+            <AdminNotificationBell />
+
             <Link
               to="/"
               className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"

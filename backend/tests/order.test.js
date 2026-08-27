@@ -182,4 +182,181 @@ describe("Order Endpoints (/api/v1/orders)", () => {
     expect(delivRes.body.data.orderStatus).toBe("delivered");
     expect(delivRes.body.data.payment.status).toBe("completed");
   });
+
+  describe("Customer Order Cancellation (PATCH /api/v1/orders/:id/cancel)", () => {
+    let orderPendingId = "";
+    let orderConfirmedId = "";
+    let orderProcessingId = "";
+    let cancelProductId = "";
+
+    beforeAll(async () => {
+      // Create product with Stock = 20
+      const prodRes = await request(app)
+        .post("/api/v1/products")
+        .set("Authorization", `Bearer ${adminToken}`)
+        .send({
+          title: `Cancel Test Product ${timestamp}`,
+          description: "Testing cancellation stock restoration",
+          price: 500,
+          stock: 20,
+          category: (await request(app).get("/api/v1/categories")).body.data[0]._id,
+        });
+      cancelProductId = prodRes.body.data._id;
+
+      // 1. Create Order 1 for User A (will remain pending, qty = 3)
+      await request(app)
+        .post("/api/v1/cart/items")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ productId: cancelProductId, quantity: 3 });
+
+      const ord1 = await request(app)
+        .post("/api/v1/orders")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({
+          shippingAddress: {
+            fullName: "User A",
+            phone: "+91 9876543210",
+            addressLine: "123 Test St",
+            city: "Bangalore",
+            state: "Karnataka",
+            pincode: "560001",
+          },
+        });
+      orderPendingId = ord1.body.data._id;
+
+      // 2. Create Order 2 for User A (will become confirmed, qty = 2)
+      await request(app)
+        .post("/api/v1/cart/items")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ productId: cancelProductId, quantity: 2 });
+
+      const ord2 = await request(app)
+        .post("/api/v1/orders")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({
+          shippingAddress: {
+            fullName: "User A",
+            phone: "+91 9876543210",
+            addressLine: "123 Test St",
+            city: "Bangalore",
+            state: "Karnataka",
+            pincode: "560001",
+          },
+        });
+      orderConfirmedId = ord2.body.data._id;
+      await request(app)
+        .patch(`/api/v1/orders/${orderConfirmedId}/status`)
+        .set("Authorization", `Bearer ${adminToken}`)
+        .send({ orderStatus: "confirmed" });
+
+      // 3. Create Order 3 for User A (will become processing, qty = 1)
+      await request(app)
+        .post("/api/v1/cart/items")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ productId: cancelProductId, quantity: 1 });
+
+      const ord3 = await request(app)
+        .post("/api/v1/orders")
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({
+          shippingAddress: {
+            fullName: "User A",
+            phone: "+91 9876543210",
+            addressLine: "123 Test St",
+            city: "Bangalore",
+            state: "Karnataka",
+            pincode: "560001",
+          },
+        });
+      orderProcessingId = ord3.body.data._id;
+      await request(app)
+        .patch(`/api/v1/orders/${orderProcessingId}/status`)
+        .set("Authorization", `Bearer ${adminToken}`)
+        .send({ orderStatus: "processing" });
+
+      // Stock check: 20 - 3 - 2 - 1 = 14
+      const pCheck = await request(app).get(`/api/v1/products/${cancelProductId}`);
+      expect(pCheck.body.data.stock).toBe(14);
+    });
+
+    it("should reject cancellation if user does NOT own the order (403)", async () => {
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderPendingId}/cancel`)
+        .set("Authorization", `Bearer ${userBToken}`)
+        .send({ reason: "I want to cancel A's order" });
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.success).toBe(false);
+    });
+
+    it("should reject cancellation for processing, shipped, or delivered status (400)", async () => {
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderProcessingId}/cancel`)
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ reason: "Changed my mind" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it("should reject cancellation if reason exceeds 250 characters (400)", async () => {
+      const tooLongReason = "a".repeat(251);
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderPendingId}/cancel`)
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ reason: tooLongReason });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it("should successfully cancel pending order and restore stock (14 + 3 = 17)", async () => {
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderPendingId}/cancel`)
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ reason: "Ordered by mistake" });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.orderStatus).toBe("cancelled");
+      expect(res.body.data.cancellationReason).toBe("Ordered by mistake");
+      expect(res.body.data.cancelledBy).toBe("user");
+      expect(res.body.data.payment.status).toBe("failed");
+      expect(res.body.data.cancelledAt).toBeTruthy();
+
+      // Check stock restored
+      const pCheck = await request(app).get(`/api/v1/products/${cancelProductId}`);
+      expect(pCheck.body.data.stock).toBe(17);
+    });
+
+    it("should reject duplicate cancellation attempt and NOT restore stock again", async () => {
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderPendingId}/cancel`)
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ reason: "Cancelling again" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.success).toBe(false);
+
+      // Stock should still be 17 (not 20!)
+      const pCheck = await request(app).get(`/api/v1/products/${cancelProductId}`);
+      expect(pCheck.body.data.stock).toBe(17);
+    });
+
+    it("should successfully cancel confirmed order and restore stock (17 + 2 = 19)", async () => {
+      const res = await request(app)
+        .patch(`/api/v1/orders/${orderConfirmedId}/cancel`)
+        .set("Authorization", `Bearer ${userAToken}`)
+        .send({ reason: "Found a better price" });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.orderStatus).toBe("cancelled");
+      expect(res.body.data.cancellationReason).toBe("Found a better price");
+
+      // Stock should be 19
+      const pCheck = await request(app).get(`/api/v1/products/${cancelProductId}`);
+      expect(pCheck.body.data.stock).toBe(19);
+    });
+  });
 });

@@ -15,9 +15,9 @@ export const createAddressValidator = (req) => {
     errors.push("Full name is required and must be at least 2 characters long");
   }
 
-  const phoneRegex = /^[0-9+\-\s]{7,15}$/;
+  const phoneRegex = /^(?:(?:\+|0{0,2})91[\s\-]?)?(?:0[\s\-]?)?[6-9](?:[\s\-]?\d){9}$/;
   if (!phone || typeof phone !== "string" || !phoneRegex.test(phone.trim())) {
-    errors.push("A valid phone number (7-15 digits) is required");
+    errors.push("A valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9) is required");
   }
 
   if (!addressLine || typeof addressLine !== "string" || addressLine.trim().length < 3) {
@@ -68,9 +68,9 @@ export const updateAddressValidator = (req) => {
     errors.push("Full name must be at least 2 characters long");
   }
 
-  const phoneRegex = /^[0-9+\-\s]{7,15}$/;
+  const phoneRegex = /^(?:(?:\+|0{0,2})91[\s\-]?)?(?:0[\s\-]?)?[6-9](?:[\s\-]?\d){9}$/;
   if (phone !== undefined && (typeof phone !== "string" || !phoneRegex.test(phone.trim()))) {
-    errors.push("Please provide a valid phone number");
+    errors.push("Please provide a valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9)");
   }
 
   if (addressLine !== undefined && (typeof addressLine !== "string" || addressLine.trim().length < 3)) {
