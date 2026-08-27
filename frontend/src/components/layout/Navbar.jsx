@@ -76,7 +76,7 @@ export const Navbar = () => {
     }`;
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-nav transition-all">
+    <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-slate-200/80 supports-[backdrop-filter]:bg-white/75 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
           {/* Logo & Main Nav */}
