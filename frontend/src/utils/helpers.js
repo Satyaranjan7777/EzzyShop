@@ -1,3 +1,20 @@
+const SENSITIVE_ERROR_PATTERNS = [
+  /[a-zA-Z]:[\\\/]/,
+  /\/(?:Users|home|var|tmp|etc|app|usr|srv|opt|node_modules)\//i,
+  /file:\/\/\//i,
+  /mongo(?:server|network)?error/i,
+  /mongoose(?:serverselection)?error/i,
+  /bson(?:error)?/i,
+  /collection:\s*[\w\.\-]+/i,
+  /dup key:\s*\{/i,
+  /^\s*at\s+/m,
+];
+
+const isSafeErrorMessage = (msg) => {
+  if (typeof msg !== "string" || !msg.trim()) return false;
+  return !SENSITIVE_ERROR_PATTERNS.some((pattern) => pattern.test(msg));
+};
+
 /**
  * Extracts a user-friendly error message from an API error
  * @param {Error|Object} error
@@ -7,11 +24,15 @@
 export const getErrorMessage = (error, fallback = "An unexpected error occurred. Please try again.") => {
   if (!error) return fallback;
 
-  if (error.response?.data?.message) {
+  if (error.response?.data?.message && isSafeErrorMessage(error.response.data.message)) {
     return error.response.data.message;
   }
 
-  if (Array.isArray(error.response?.data?.errors) && error.response.data.errors.length > 0) {
+  if (
+    Array.isArray(error.response?.data?.errors) &&
+    error.response.data.errors.length > 0 &&
+    isSafeErrorMessage(error.response.data.errors[0])
+  ) {
     return error.response.data.errors[0];
   }
 
@@ -42,12 +63,12 @@ export const getErrorMessage = (error, fallback = "An unexpected error occurred.
     return "Server is taking longer than usual to respond (it may be waking up). Please retry in a few moments.";
   }
 
-  if (error.message && error.message !== "Network Error") {
-    return error.message;
-  }
-
   if (error.message === "Network Error") {
     return "Cannot connect to server. Please ensure the backend is running and reachable.";
+  }
+
+  if (error.message && isSafeErrorMessage(error.message)) {
+    return error.message;
   }
 
   return fallback;

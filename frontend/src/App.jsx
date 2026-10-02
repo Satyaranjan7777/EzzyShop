@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/common/ScrollToTop";
 import { useAuthStore } from "./store/auth.store";
@@ -33,7 +34,9 @@ export function App() {
       <GlobalAdminNotifier />
       {/* Global Scroll Restoration and Floating Back-to-Top FAB */}
       <ScrollToTop />
-      <AppRoutes />
+      <ErrorBoundary>
+        <AppRoutes />
+      </ErrorBoundary>
       <Toaster
         position="top-right"
         gutter={12}

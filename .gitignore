@@ -21,6 +21,10 @@ build/
 */build/
 dist-ssr/
 *.tsbuildinfo
+storage/uploads/*
+!storage/uploads/.gitkeep
+backend/storage/uploads/*
+!backend/storage/uploads/.gitkeep
 
 # Testing & Coverage
 coverage/

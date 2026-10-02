@@ -50,7 +50,8 @@ backend/
 ├── src/
 │   │
 │   ├── config/
-│   │   └── db.js                 # MongoDB connection logic
+│   │   ├── db.js                 # MongoDB connection logic
+│   │   └── rateLimit.config.js   # Configurable rate limiting thresholds
 │   │
 │   ├── controllers/
 │   │   ├── auth.controller.js     # User registration, login, and profile
@@ -58,7 +59,8 @@ backend/
 │   │   ├── category.controller.js # Category management
 │   │   ├── cart.controller.js     # Shopping cart operations
 │   │   ├── address.controller.js  # User shipping address management
-│   │   └── order.controller.js    # Checkout & order processing
+│   │   ├── order.controller.js    # Checkout & order processing
+│   │   └── health.controller.js   # System diagnostics & DB connectivity check
 │   │
 │   ├── models/
 │   │   ├── User.js                # User schema & password comparison
@@ -74,16 +76,20 @@ backend/
 │   │   ├── category.routes.js     # /api/v1/categories
 │   │   ├── cart.routes.js         # /api/v1/cart
 │   │   ├── address.routes.js      # /api/v1/addresses
-│   │   └── order.routes.js        # /api/v1/orders
+│   │   ├── order.routes.js        # /api/v1/orders
+│   │   └── health.routes.js       # /health & /api/v1/health
 │   │
 │   ├── middleware/
 │   │   ├── auth.middleware.js     # JWT verification & req.user attachment
+│   │   ├── rateLimiter.middleware.js # Multi-tier rate limiting with exponential backoff
 │   │   ├── role.middleware.js     # Role authorization (e.g. adminOnly)
 │   │   ├── validate.middleware.js # Request validation middleware
 │   │   ├── error.middleware.js    # Global error handler
 │   │   └── notFound.middleware.js # 404 handler
 │   │
 │   ├── validators/
+│   │   ├── schema.js              # Strict schema engine (type, length, format & reject unknown)
+│   │   ├── common.validator.js    # Shared parameter & query validators (e.g. ObjectId)
 │   │   ├── auth.validator.js      # Auth request validation
 │   │   ├── product.validator.js   # Product request validation
 │   │   ├── category.validator.js  # Category request validation
@@ -206,10 +212,44 @@ Authorization: Bearer <your_jwt_token>
 
 Base URL: `http://localhost:5001/api/v1`
 
-### Health Check
+### Health Check & System Diagnostics
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| `GET` | `/health` | Public | Check if API server is running |
+| `GET` | `/health` | Public | Full system, uptime, and MongoDB connectivity status |
+| `GET` | `/api/v1/health` | Public | Full system, uptime, and MongoDB connectivity status |
+| `GET` | `/health?strict=true` | Public | Readiness probe (returns 503 if MongoDB is disconnected) |
+
+**Sample Response (`200 OK`):**
+```json
+{
+  "success": true,
+  "message": "API is running",
+  "status": "healthy",
+  "timestamp": "2026-10-02T12:00:00.000Z",
+  "uptime": {
+    "seconds": 120,
+    "formatted": "2m 0s"
+  },
+  "services": {
+    "database": {
+      "status": "connected",
+      "readyState": 1,
+      "latencyMs": 4
+    }
+  },
+  "system": {
+    "nodeVersion": "v20.x.x",
+    "environment": "development",
+    "memory": {
+      "rss": "52.12 MB",
+      "heapTotal": "34.50 MB",
+      "heapUsed": "28.10 MB",
+      "external": "2.40 MB"
+    }
+  },
+  "responseTimeMs": 5
+}
+```
 
 ---
 
@@ -273,3 +313,72 @@ Base URL: `http://localhost:5001/api/v1`
 | `GET` | `/orders/:id` | Private | Get single order details | — |
 | `GET` | `/orders` | Admin | List all orders across all users | `?status=pending&page=1&limit=10` |
 | `PATCH` | `/orders/:id/status` | Admin | Update order status | `{ "orderStatus": "confirmed" }` |
+
+---
+
+## Rate Limiting & Abuse Prevention
+
+The backend implements a granular, tiered rate limiting system designed for enterprise security and optimal user experience:
+
+### 1. Endpoint Tiers
+
+| Tier | Endpoints | Default Limit | Strategy / Key |
+|---|---|---|---|
+| **Authentication** | `POST /api/v1/auth/login`<br>`POST /api/v1/auth/register` | 10 per IP, 5 per Account | **Exponential Backoff** with dual tracking (Per-IP & Per-Account) |
+| **Public Endpoints** | `GET /api/v1/products`<br>`GET /api/v1/categories`<br>`GET /api/v1/health` | 100 req / 15 min | Sliding window keyed by Client IP |
+| **Authenticated Actions** | `/api/v1/cart/*`<br>`/api/v1/orders/*`<br>`/api/v1/addresses/*`<br>`GET /api/v1/auth/me`<br>Admin mutations | 500 req / 15 min | Sliding window keyed by Authenticated User ID (with IP fallback) |
+
+### 2. Auth Routes: Exponential Backoff & Dual IP + Account Defense
+
+Rather than applying a rigid lockout that locks out legitimate users for 30 minutes, authentication routes implement **progressive exponential backoff**:
+- **Dual Vector Protection**:
+  - **Per-IP Limit**: Stops single-IP credential stuffing across many accounts.
+  - **Per-Account Limit**: Stops distributed brute-force attacks from multiple botnet IPs targeting a single user account.
+- **Exponential Cooldown Formula**:
+  $$\text{Delay} = \min(\text{baseDelayMs} \times (\text{backoffFactor}^{\text{excessAttempts}}), \text{maxDelayMs})$$
+  *(e.g. 1s → 2s → 4s → 8s → 16s → 32s ... up to 15 minutes)*.
+- **Trial Attempts**: When the cooldown expires, the user is granted a single trial attempt. If authentication succeeds, the account backoff resets immediately. If it fails, the cooldown doubles exponentially.
+- **Standard HTTP Headers**: Sets `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`, and `Retry-After: <seconds>` on `HTTP 429 Too Many Requests`.
+
+### 3. Environment Variable Configuration
+
+All thresholds are fully configurable in `.env`:
+
+```env
+# Master Toggle
+RATE_LIMIT_ENABLED=true
+
+# Auth Routes Configuration
+RATE_LIMIT_AUTH_WINDOW_MS=900000        # 15 min tracking window
+RATE_LIMIT_AUTH_IP_MAX=10              # Max attempts per IP
+RATE_LIMIT_AUTH_ACCOUNT_MAX=5          # Max attempts per account
+RATE_LIMIT_AUTH_BASE_DELAY_MS=1000     # Base backoff delay (1s)
+RATE_LIMIT_AUTH_BACKOFF_FACTOR=2       # Exponential multiplier (2x)
+RATE_LIMIT_AUTH_MAX_DELAY_MS=900000    # Max backoff cap (15 min)
+RATE_LIMIT_AUTH_RESET_ON_SUCCESS=true  # Reset account counter on success
+
+# Public Endpoints
+RATE_LIMIT_PUBLIC_WINDOW_MS=900000     # 15 min window
+RATE_LIMIT_PUBLIC_MAX=100              # 100 requests per IP
+
+# Authenticated User Actions
+RATE_LIMIT_USER_WINDOW_MS=900000       # 15 min window
+RATE_LIMIT_USER_MAX=500                # 500 requests per user
+```
+
+---
+
+## Strict Input Schema Validation
+
+To prevent injection, mass assignment, type juggling, and malformed payload attacks, the API applies **strict schema validation** across all input channels (`body`, `params`, `query`):
+
+### 1. Fail-Closed Principles
+- **No Sanitization / Coercion Bypasses**: The API does not silently strip, escape, or coerce malformed payloads. Any input that deviates from the strict schema is **immediately rejected with HTTP 400 Bad Request**.
+- **Mass Assignment & Unknown Field Rejection (`strict: true`)**: Any unexpected, unknown, or extraneous properties submitted in the request body or query parameters are flagged and rejected immediately.
+- **Boundary Validation**:
+  - **Type**: Strict type checks (`string`, `number`, `boolean`, `array`, `object`). Passing numbers for strings or objects for primitives is instantly rejected.
+  - **Length**: Strict minimum and maximum boundaries on all string and array fields (e.g. name: 2-50 chars, description: 5-5000 chars, password: 6-128 chars).
+  - **Format**: Regex and structural format verification (RFC 5322 emails, 24-character hexadecimal MongoDB ObjectIds, 10-digit Indian phone numbers, 6-digit postal PIN codes, valid http/https URLs, and exact enum whitelists).
+  - **Parameter Security**: All route parameters (`:id`, `:productId`) are strictly verified as valid 24-character hexadecimal ObjectIds before hitting any database query.
+
+
