@@ -9,6 +9,7 @@ export const useAuth = () => {
     isLoading,
     isInitialized,
     login: storeLogin,
+    masterLogin: storeMasterLogin,
     register: storeRegister,
     logout: storeLogout,
     getCurrentUser,
@@ -25,6 +26,10 @@ export const useAuth = () => {
     return result;
   };
 
+  const masterLogin = async (credentials) => {
+    return await storeMasterLogin(credentials);
+  };
+
   const register = async (userData) => {
     const result = await storeRegister(userData);
     // Fetch user's cart on successful registration
@@ -37,6 +42,7 @@ export const useAuth = () => {
     resetCartState();
   };
 
+  const isMaster = user?.role === "master";
   const isAdmin = user?.role === "admin";
 
   return {
@@ -46,7 +52,9 @@ export const useAuth = () => {
     isLoading,
     isInitialized,
     isAdmin,
+    isMaster,
     login,
+    masterLogin,
     register,
     logout,
     getCurrentUser,

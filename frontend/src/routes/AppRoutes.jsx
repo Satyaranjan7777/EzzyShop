@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layouts
 import MainLayout from "../components/layout/MainLayout";
@@ -8,6 +8,7 @@ import AdminLayout from "../components/layout/AdminLayout";
 // Route Guards
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
+import MasterRoute from "./MasterRoute";
 
 // Public Pages
 import Home from "../pages/public/Home";
@@ -18,6 +19,11 @@ import NotFound from "../pages/public/NotFound";
 // Auth Pages
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+
+// Master Pages
+import MasterLogin from "../pages/master/MasterLogin";
+import MasterAdmins from "../pages/master/MasterAdmins";
+import MasterAdminActivity from "../pages/master/MasterAdminActivity";
 
 // Protected User Pages
 import Profile from "../pages/user/Profile";
@@ -56,6 +62,17 @@ export const AppRoutes = () => {
 
         {/* 404 Catch-all */}
         <Route path="*" element={<NotFound />} />
+      </Route>
+
+      {/* Standalone Master Login Route */}
+      <Route path="/master/login" element={<MasterLogin />} />
+
+      {/* Protected Master Routes */}
+      <Route path="/master" element={<MasterRoute />}>
+        <Route index element={<Navigate to="/master/admins" replace />} />
+        <Route path="admins" element={<MasterAdmins />} />
+        <Route path="admins/:id/activity" element={<MasterAdminActivity />} />
+        <Route path="admins/:id/activities" element={<Navigate to="../activity" replace />} />
       </Route>
 
       {/* Protected Admin Routes with AdminLayout */}

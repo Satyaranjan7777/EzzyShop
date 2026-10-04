@@ -13,11 +13,11 @@ import addressRoutes from "./routes/address.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import healthRoutes from "./routes/health.routes.js";
+import masterRoutes from "./routes/master.routes.js";
 
 // Middlewares
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
-import { publicLimiter } from "./middleware/rateLimiter.middleware.js";
 import mongoSanitize from "./middleware/sanitize.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -82,6 +82,7 @@ app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/addresses", addressRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/upload", uploadRoutes);
+app.use("/api/v1/master", masterRoutes);
 
 // Serve uploaded assets statically with dotfile protection and execution sandboxing
 const uploadsStaticPath = path.resolve(__dirname, "../storage/uploads");

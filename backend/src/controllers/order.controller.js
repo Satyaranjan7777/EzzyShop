@@ -6,6 +6,7 @@ import Address from "../models/Address.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import logActivity from "../utils/activityLogger.js";
 
 /**
  * @desc    Create a new order from user's cart
@@ -490,6 +491,17 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
       reason: reason || "Cancelled by administrator",
     });
 
+    // Log admin activity for Master audit trail
+    await logActivity(
+      req.user,
+      "CANCEL_ORDER",
+      "Order",
+      cancelledOrder._id,
+      `#${cancelledOrder._id.toString().slice(-6).toUpperCase()}`,
+      { reason: reason || "Cancelled by administrator" },
+      req
+    );
+
     return new ApiResponse(
       200,
       "Order status updated to 'cancelled' successfully",
@@ -527,6 +539,17 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
   const populatedOrder = await Order.findById(order._id)
     .populate("user", "name email")
     .populate("items.product", "title slug images");
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "UPDATE_ORDER_STATUS",
+    "Order",
+    populatedOrder._id,
+    `#${populatedOrder._id.toString().slice(-6).toUpperCase()}`,
+    { previousStatus, newStatus: orderStatus },
+    req
+  );
 
   return new ApiResponse(
     200,

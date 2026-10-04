@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { authService } from "../services/auth.service";
+import { masterService } from "../services/master.service";
 import { TOKEN_STORAGE_KEY } from "../utils/constants";
 import { getErrorMessage } from "../utils/helpers";
 import toast from "react-hot-toast";
@@ -87,6 +88,36 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       set({ isLoading: false });
       const msg = getErrorMessage(error, "Login failed. Please check credentials.");
+      toast.error(msg);
+      throw error;
+    }
+  },
+
+  /**
+   * Master login action
+   */
+  masterLogin: async (credentials) => {
+    try {
+      set({ isLoading: true });
+      const response = await masterService.login(credentials);
+      const { user, token } = response.data;
+
+      if (token) {
+        sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
+      }
+
+      set({
+        user,
+        token,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+
+      toast.success(response.message || `Welcome Master, ${user.name}!`);
+      return { success: true, user, token };
+    } catch (error) {
+      set({ isLoading: false });
+      const msg = getErrorMessage(error, "Master login failed. Access denied.");
       toast.error(msg);
       throw error;
     }

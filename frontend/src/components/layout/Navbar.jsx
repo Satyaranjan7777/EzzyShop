@@ -11,6 +11,7 @@ import {
   ChevronDown,
   LayoutDashboard,
   Search,
+  ShieldCheck,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { useCartStore } from "../../store/cart.store";
@@ -19,7 +20,7 @@ import logoImg from "../../assets/logo.png";
 import AdminNotificationBell from "../admin/AdminNotificationBell";
 
 export const Navbar = () => {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, isMaster, logout } = useAuth();
   const cartSummary = useCartStore((state) => state.summary);
   const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -210,6 +211,17 @@ export const Navbar = () => {
                           Admin Panel
                         </Link>
                       )}
+
+                      {isMaster && (
+                        <Link
+                          to="/master/admins"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-amber-700 bg-amber-50/80 hover:bg-amber-100 font-bold transition-colors"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-amber-600" />
+                          Master Console
+                        </Link>
+                      )}
                     </div>
 
                     <div className="py-1">
@@ -308,6 +320,15 @@ export const Navbar = () => {
                   >
                     <LayoutDashboard className="w-5 h-5 text-indigo-600" />
                     Admin Control Center
+                  </NavLink>
+                )}
+                {isMaster && (
+                  <NavLink
+                    to="/master/admins"
+                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-base font-bold text-amber-700 bg-amber-50/80"
+                  >
+                    <ShieldCheck className="w-5 h-5 text-amber-600" />
+                    Master Console
                   </NavLink>
                 )}
                 <button

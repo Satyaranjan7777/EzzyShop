@@ -1,6 +1,20 @@
 import schema from "./schema.js";
 
 /**
+ * Image item validator: accepts absolute HTTP/HTTPS URLs or valid relative upload paths (/uploads/...)
+ */
+const imageItemSchema = schema
+  .string()
+  .min(5, "Image URL or path must be at least 5 characters long")
+  .max(1000, "Image URL cannot exceed 1000 characters")
+  .refine(
+    (val) =>
+      typeof val === "string" &&
+      (/^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(val) || /^\/uploads\/[a-zA-Z0-9.\-_]+$/i.test(val)),
+    "Each image must be a valid http or https URL or an uploaded image path"
+  );
+
+/**
  * Strict schema for Creating a Product
  */
 const createProductBodySchema = schema
@@ -26,7 +40,7 @@ const createProductBodySchema = schema
       .optional(),
     category: schema.objectId("A valid 24-character category ID is required"),
     images: schema
-      .array(schema.url("Each image must be a valid http or https URL"))
+      .array(imageItemSchema)
       .min(0)
       .max(10, "Cannot upload more than 10 images")
       .optional(),
@@ -87,7 +101,7 @@ const updateProductBodySchema = schema
       .optional(),
     category: schema.objectId("Invalid category ID format").optional(),
     images: schema
-      .array(schema.url("Each image must be a valid http or https URL"))
+      .array(imageItemSchema)
       .min(0)
       .max(10, "Cannot exceed 10 images")
       .optional(),

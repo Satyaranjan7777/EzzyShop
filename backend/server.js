@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import app from "./src/app.js";
 import connectDB from "./src/config/db.js";
 import logger from "./src/utils/logger.js";
+import seedMaster from "./src/seeds/seedMaster.js";
 
-// Load environment variables
-dotenv.config();
+// Load environment variables silently
+dotenv.config({ quiet: true });
 
 // Verify required critical environment variables
 const requiredEnvVars = ["MONGO_URI", "JWT_SECRET"];
@@ -28,6 +29,14 @@ const PORT = process.env.PORT || 5001;
 const startServer = async () => {
   try {
     await connectDB();
+
+    // Auto-verify Master Account silently in background
+    try {
+      await seedMaster({ silent: true });
+    } catch (seedErr) {
+      logger.warn(`Master seed verification warning: ${seedErr.message}`);
+    }
+
     const server = app.listen(PORT, () => {
       logger.info(
         `Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`

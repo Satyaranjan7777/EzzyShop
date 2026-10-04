@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Search, Package } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, Package, ShieldCheck } from "lucide-react";
+import useAuth from "../../hooks/useAuth";
 import { productService } from "../../services/product.service";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getErrorMessage, getPrimaryImage } from "../../utils/helpers";
@@ -12,6 +13,7 @@ import Button from "../../components/common/Button";
 import toast from "react-hot-toast";
 
 export const AdminProducts = () => {
+  const { isMaster } = useAuth();
   const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,14 +119,26 @@ export const AdminProducts = () => {
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          leftIcon={Plus}
-          onClick={handleOpenCreateModal}
-        >
-          Add New Product
-        </Button>
+        {!isMaster && (
+          <Button
+            variant="primary"
+            leftIcon={Plus}
+            onClick={handleOpenCreateModal}
+          >
+            Add New Product
+          </Button>
+        )}
       </div>
+
+      {/* Master Read-Only Governance Notice */}
+      {isMaster && (
+        <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex items-center gap-3 text-amber-800 shadow-xs">
+          <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0" />
+          <p className="text-xs">
+            <strong className="font-bold">Master Governance Mode:</strong> You are viewing the product catalog in read-only mode. In accordance with enterprise separation of duties, modifying product details, pricing, and stock is strictly restricted to Operational Admins.
+          </p>
+        </div>
+      )}
 
       {/* Search bar */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2 max-w-md">
@@ -260,24 +274,30 @@ export const AdminProducts = () => {
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 sm:px-6 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(product)}
-                            className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                            title="Edit Product"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setDeletingProduct(product)}
-                            className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                        {isMaster ? (
+                          <span className="text-[11px] font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
+                            Read-Only (Master)
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditModal(product)}
+                              className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                              title="Edit Product"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingProduct(product)}
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                              title="Delete Product"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );

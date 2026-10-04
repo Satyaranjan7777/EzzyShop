@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { User, Mail, Lock, Eye, EyeOff, Store, ArrowRight, ShieldCheck } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Store, ArrowRight } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
@@ -22,7 +22,6 @@ const registerSchema = z
       .string()
       .min(6, "Password must be at least 6 characters long"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    role: z.enum(["user", "admin"]).default("user"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -46,7 +45,6 @@ export const Register = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      role: "user",
     },
   });
 
@@ -57,7 +55,6 @@ export const Register = () => {
         name: data.name.trim(),
         email: data.email.trim(),
         password: data.password,
-        role: data.role,
       });
       navigate("/", { replace: true });
     } catch {
@@ -126,36 +123,6 @@ export const Register = () => {
             error={errors.confirmPassword?.message}
             {...register("confirmPassword")}
           />
-
-          {/* Account Role Selector (Optional user/admin selector for convenience) */}
-          <div className="pt-1">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1.5">
-              Account Role
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <label className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-medium text-slate-700">
-                <input
-                  type="radio"
-                  value="user"
-                  className="text-indigo-600 focus:ring-indigo-500"
-                  {...register("role")}
-                />
-                <span>Customer</span>
-              </label>
-              <label className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-medium text-slate-700">
-                <input
-                  type="radio"
-                  value="admin"
-                  className="text-indigo-600 focus:ring-indigo-500"
-                  {...register("role")}
-                />
-                <span className="flex items-center gap-1 font-semibold text-indigo-700">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  Admin
-                </span>
-              </label>
-            </div>
-          </div>
 
           <Button
             type="submit"
