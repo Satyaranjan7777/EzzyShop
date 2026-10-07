@@ -87,7 +87,7 @@ export const AdminOrders = () => {
               onClick={() => handleStatusTabClick(tab.value)}
               className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
                 isActive
-                  ? "bg-indigo-600 text-white shadow-xs"
+                  ? "bg-[#ed1d24] text-white shadow-xs"
                   : "bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200"
               }`}
             >
@@ -101,7 +101,7 @@ export const AdminOrders = () => {
       {isLoading && orders.length === 0 ? (
         <Loader text="Loading orders list..." />
       ) : orders.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 text-slate-500 text-sm">
+        <div className="p-12 text-center bg-white rounded-xl border border-slate-200 text-slate-500 text-sm">
           No orders found matching the selected status filter.
         </div>
       ) : (

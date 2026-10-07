@@ -54,14 +54,14 @@ export const AdminLayout = () => {
 
             <Link
               to="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#ed1d24] hover:text-[#d32f2f] bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
             >
               <Store className="w-3.5 h-3.5" />
               Visit Store
             </Link>
 
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-8 h-8 rounded-lg bg-[#ed1d24] text-white flex items-center justify-center font-bold text-xs">
                 {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
               </div>
               <div className="hidden md:flex flex-col text-left">

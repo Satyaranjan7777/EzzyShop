@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import useProducts from "../../hooks/useProducts";
 import ProductGrid from "../../components/product/ProductGrid";
 import ProductSearch from "../../components/product/ProductSearch";
@@ -9,7 +9,7 @@ import ErrorState from "../../components/common/ErrorState";
 import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import { DEFAULT_PAGE_LIMIT } from "../../utils/constants";
-import { X, Sparkles, SlidersHorizontal } from "lucide-react";
+import { X, Sparkles, SlidersHorizontal, ChevronRight, Home } from "lucide-react";
 
 export const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,25 +91,43 @@ export const Products = () => {
   ].filter(Boolean).length;
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 lg:py-12 space-y-6 sm:space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6">
+      {/* Breadcrumb Navigation (Reference Style) */}
+      <nav className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+        <Link to="/" className="hover:text-[#ed1d24] flex items-center gap-1">
+          <Home className="w-3.5 h-3.5" />
+          <span>Home</span>
+        </Link>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+        <span className="text-slate-800 font-bold">Products</span>
+        {currentFilters.category && (
+          <>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-[#ed1d24] font-bold capitalize">
+              {currentFilters.category}
+            </span>
+          </>
+        )}
+      </nav>
+
       {/* Header Banner */}
-      <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="space-y-1 sm:space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-400" />
+      <div className="p-6 sm:p-8 rounded-xl bg-gradient-to-r from-[#002d2b] to-[#0f172a] text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#ed1d24] text-white text-[10px] font-bold uppercase tracking-wider">
+            <Sparkles className="w-3 h-3 text-white" />
             <span>Store Catalog</span>
           </div>
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black font-heading leading-tight">
-            Explore All Products
+          <h1 className="text-xl sm:text-3xl font-black font-heading leading-tight text-white">
+            {currentFilters.category ? `Category: ${currentFilters.category}` : "All Products"}
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 max-w-lg leading-relaxed">
-            Discover thousands of handpicked goods with doorstep Cash on Delivery guarantee.
+            Discover verified electronics, lifestyle goods, and accessories with doorstep Cash on Delivery guarantee.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-semibold bg-white/10 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/10 shrink-0">
-          <span className="text-slate-300">Total:</span>
-          <span className="text-white font-bold">{pagination.total || 0} Items</span>
+        <div className="flex items-center gap-2 text-xs font-semibold bg-white/10 px-3.5 py-1.5 rounded-lg border border-white/15 shrink-0">
+          <span className="text-slate-300">Total Products:</span>
+          <span className="text-white font-bold">{pagination.total || 0}</span>
         </div>
       </div>
 
@@ -124,13 +142,13 @@ export const Products = () => {
         <button
           type="button"
           onClick={() => setIsMobileFilterOpen(true)}
-          className="relative p-2.5 sm:px-4 sm:py-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-indigo-600 shrink-0 cursor-pointer"
+          className="relative p-2.5 rounded-lg bg-white border border-slate-300 shadow-xs flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-[#ed1d24] shrink-0 cursor-pointer"
           aria-label="Open filters"
         >
-          <SlidersHorizontal className="w-4 h-4 text-indigo-600" />
-          <span className="hidden sm:inline">Filters</span>
+          <SlidersHorizontal className="w-4 h-4 text-[#ed1d24]" />
+          <span>Filters</span>
           {activeFiltersCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-black flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#ed1d24] text-white text-[10px] font-black flex items-center justify-center">
               {activeFiltersCount}
             </span>
           )}
@@ -140,7 +158,7 @@ export const Products = () => {
       {/* Main Grid: Sidebar Filters + Products Listing */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         {/* Desktop Left Filters Sidebar */}
-        <div className="hidden lg:block lg:col-span-1 space-y-5 sticky top-24">
+        <div className="hidden lg:block lg:col-span-1 space-y-4 sticky top-28">
           <ProductSearch
             initialValue={currentFilters.search}
             onSearchChange={handleSearchChange}
@@ -156,21 +174,21 @@ export const Products = () => {
         </div>
 
         {/* Right Products Catalog */}
-        <div className="lg:col-span-3 space-y-5 sm:space-y-6">
+        <div className="lg:col-span-3 space-y-5">
           {/* Active Filters Pill Bar */}
           {activeFiltersCount > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-xs">
-              <span className="text-slate-400 font-bold uppercase text-[9px] sm:text-[10px] tracking-wider pl-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 p-3 rounded-lg bg-white border border-slate-200 shadow-xs text-xs">
+              <span className="text-slate-400 font-bold uppercase text-[10px] tracking-wider pl-1">
                 Active:
               </span>
 
               {currentFilters.search && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-[11px] sm:text-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-50 text-[#ed1d24] font-bold text-xs">
                   <span>Search: "{currentFilters.search}"</span>
                   <button
                     type="button"
                     onClick={() => handleSearchChange("")}
-                    className="hover:text-indigo-900 cursor-pointer"
+                    className="hover:text-red-900 cursor-pointer ml-1"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -178,12 +196,12 @@ export const Products = () => {
               )}
 
               {currentFilters.category && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-700 font-bold text-[11px] sm:text-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-50 text-[#ed1d24] font-bold text-xs">
                   <span>Category: {currentFilters.category}</span>
                   <button
                     type="button"
                     onClick={() => handleFilterChange({ category: "" })}
-                    className="hover:text-purple-900 cursor-pointer"
+                    className="hover:text-red-900 cursor-pointer ml-1"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -191,12 +209,12 @@ export const Products = () => {
               )}
 
               {currentFilters.inStock === "true" && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-[11px] sm:text-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 font-bold text-xs">
                   <span>In Stock Only</span>
                   <button
                     type="button"
                     onClick={() => handleFilterChange({ inStock: "" })}
-                    className="hover:text-emerald-900 cursor-pointer"
+                    className="hover:text-emerald-900 cursor-pointer ml-1"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -206,7 +224,7 @@ export const Products = () => {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="text-xs font-bold text-rose-600 hover:underline ml-auto pr-2 cursor-pointer"
+                className="text-xs font-bold text-[#ed1d24] hover:underline ml-auto pr-2 cursor-pointer"
               >
                 Clear All
               </button>
@@ -230,7 +248,7 @@ export const Products = () => {
 
               {/* Pagination */}
               {!isLoading && pagination.totalPages > 1 && (
-                <div className="pt-2 sm:pt-4">
+                <div className="pt-4">
                   <Pagination
                     currentPage={pagination.page}
                     totalPages={pagination.totalPages}
@@ -271,7 +289,7 @@ export const Products = () => {
             <Button
               variant="primary"
               size="lg"
-              className="w-full rounded-xl"
+              className="w-full rounded-lg"
               onClick={() => setIsMobileFilterOpen(false)}
             >
               View {pagination.total || 0} Products

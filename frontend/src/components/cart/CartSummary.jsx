@@ -19,9 +19,9 @@ export const CartSummary = ({
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-sm space-y-6">
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-        <h3 className="text-lg font-black text-slate-900 font-heading">
+    <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 className="text-base font-black text-slate-900 font-heading">
           Order Summary
         </h3>
         <span className="text-xs font-bold text-slate-400">
@@ -31,30 +31,30 @@ export const CartSummary = ({
 
       {/* Free Shipping Progress Indicator */}
       {subtotal > 0 && (
-        <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-2.5">
+        <div className="p-3 rounded-lg bg-red-50/60 border border-red-100 space-y-2">
           <div className="flex items-center justify-between text-xs font-bold">
-            <div className="flex items-center gap-1.5 text-indigo-900">
-              <Truck className="w-4 h-4 text-indigo-600" />
+            <div className="flex items-center gap-1.5 text-slate-800">
+              <Truck className="w-4 h-4 text-[#ed1d24]" />
               <span>
                 {subtotal >= freeShippingThreshold ? (
                   <span className="text-emerald-700 font-extrabold flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                    You unlocked FREE Express Delivery!
+                    FREE Express Delivery Unlocked!
                   </span>
                 ) : (
                   <>
-                    Add <strong className="text-indigo-700">{formatCurrency(amountNeededForFreeShipping)}</strong> for FREE Delivery
+                    Add <strong className="text-[#ed1d24]">{formatCurrency(amountNeededForFreeShipping)}</strong> for FREE Delivery
                   </>
                 )}
               </span>
             </div>
-            <span className="text-indigo-700">{progressPercent}%</span>
+            <span className="text-[#ed1d24]">{progressPercent}%</span>
           </div>
 
-          <div className="w-full bg-indigo-200/50 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
             <div
-              className={`h-2 rounded-full transition-all duration-500 ease-out ${
-                subtotal >= freeShippingThreshold ? "bg-emerald-500" : "bg-indigo-600"
+              className={`h-1.5 rounded-full transition-all duration-500 ease-out ${
+                subtotal >= freeShippingThreshold ? "bg-emerald-500" : "bg-[#ed1d24]"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -63,10 +63,10 @@ export const CartSummary = ({
       )}
 
       {/* Breakdown Rows */}
-      <div className="space-y-3.5 text-sm">
+      <div className="space-y-3 text-xs sm:text-sm">
         <div className="flex justify-between text-slate-600">
           <span>Items Subtotal</span>
-          <span className="font-bold text-slate-900 font-heading">
+          <span className="font-bold text-slate-900">
             {formatCurrency(subtotal)}
           </span>
         </div>
@@ -75,7 +75,7 @@ export const CartSummary = ({
           <span>Doorstep Delivery Charge</span>
           <span className="font-bold">
             {shippingFee === 0 ? (
-              <span className="text-emerald-600 uppercase text-xs font-black bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+              <span className="text-emerald-600 uppercase text-xs font-black bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 FREE
               </span>
             ) : (
@@ -84,14 +84,14 @@ export const CartSummary = ({
           </span>
         </div>
 
-        <div className="pt-4 border-t border-slate-100 flex justify-between items-baseline">
+        <div className="pt-3 border-t border-slate-100 flex justify-between items-baseline">
           <div>
-            <span className="text-base font-black text-slate-900 font-heading block">
+            <span className="text-sm font-black text-slate-900 font-heading block">
               Estimated Total
             </span>
-            <span className="text-[11px] text-slate-400 font-medium">All taxes & packaging included</span>
+            <span className="text-[10px] text-slate-400 font-medium">All taxes included</span>
           </div>
-          <span className="text-2xl font-black text-indigo-600 font-heading">
+          <span className="text-xl font-black text-[#ed1d24] font-heading">
             {formatCurrency(estimatedTotal)}
           </span>
         </div>
@@ -108,7 +108,7 @@ export const CartSummary = ({
               onClick={onCheckout}
               isLoading={isCheckingOut}
               rightIcon={ArrowRight}
-              className="w-full shadow-lg shadow-indigo-600/25 py-4 font-bold rounded-2xl text-sm"
+              className="w-full py-3.5 font-bold rounded-lg text-sm shadow-md"
             >
               {checkoutButtonText}
             </Button>
@@ -119,7 +119,7 @@ export const CartSummary = ({
                 variant="primary"
                 size="lg"
                 rightIcon={ArrowRight}
-                className="w-full shadow-lg shadow-indigo-600/25 py-4 font-bold rounded-2xl text-sm"
+                className="w-full py-3.5 font-bold rounded-lg text-sm shadow-md"
               >
                 Proceed to Checkout
               </Button>
@@ -129,9 +129,9 @@ export const CartSummary = ({
       )}
 
       {/* Trust Badges */}
-      <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500 font-semibold">
+      <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500 font-medium">
         <ShieldCheck className="w-4 h-4 text-emerald-600" />
-        <span>Cash on Delivery • 100% Buyer Protection</span>
+        <span>Cash on Delivery Guaranteed</span>
       </div>
     </div>
   );

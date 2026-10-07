@@ -5,13 +5,20 @@ import User from "../models/User.js";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 
-// Load environment variables
-dotenv.config();
+// Load environment variables silently
+dotenv.config({ quiet: true });
 
 // ============================================================================
 // Demo Users Dataset (Configurable via Environment Variables)
 // ============================================================================
 const usersData = [
+  {
+    name: "Master Admin",
+    email: process.env.SEED_MASTER_EMAIL || "satyaranjan@gmail.com",
+    plainPassword: process.env.SEED_MASTER_PASSWORD || "Master@2026",
+    role: "master",
+    isActive: true,
+  },
   {
     name: "Admin User",
     email: process.env.SEED_ADMIN_EMAIL || "admin@ezzyshop.com",
@@ -869,13 +876,17 @@ const runSeed = async () => {
     if (process.env.NODE_ENV === "production") {
       console.log("Seeding in PRODUCTION mode: Plaintext passwords are not displayed.");
     } else {
-      console.log("Demo Admin:");
+      console.log("Master Admin:");
       console.log(`Email: ${usersData[0].email}`);
       console.log(`Password: ${usersData[0].plainPassword}\n`);
 
-      console.log("Demo User:");
+      console.log("Demo Admin:");
       console.log(`Email: ${usersData[1].email}`);
       console.log(`Password: ${usersData[1].plainPassword}\n`);
+
+      console.log("Demo User:");
+      console.log(`Email: ${usersData[2].email}`);
+      console.log(`Password: ${usersData[2].plainPassword}\n`);
     }
   } catch (error) {
     console.error("\n❌ Database Seeding Failed!");

@@ -155,7 +155,7 @@ export const AddressForm = ({
           <label className="flex items-center gap-2.5 cursor-pointer select-none">
             <input
               type="checkbox"
-              className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 focus:ring-2"
+              className="w-4 h-4 text-[#ed1d24] rounded border-slate-300 focus:ring-[#ed1d24] focus:ring-2"
               {...register("isDefault")}
             />
             <span className="text-xs font-semibold text-slate-700">

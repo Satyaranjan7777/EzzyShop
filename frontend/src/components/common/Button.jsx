@@ -26,23 +26,23 @@ export const Button = ({
 
   const variantStyles = {
     primary:
-      "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-indigo-500/20 focus:ring-indigo-500",
+      "bg-[#ed1d24] hover:bg-[#d32f2f] text-white shadow-xs hover:shadow-md hover:shadow-red-500/20 focus:ring-red-500 font-semibold",
     secondary:
-      "bg-slate-100 hover:bg-slate-200 text-slate-800 focus:ring-slate-400 border border-slate-200/80",
+      "bg-slate-100 hover:bg-slate-200 text-slate-800 focus:ring-slate-400 border border-slate-200/80 font-semibold",
     dark:
-      "bg-slate-900 hover:bg-slate-800 text-white shadow-sm focus:ring-slate-700",
+      "bg-slate-900 hover:bg-slate-800 text-white shadow-xs focus:ring-slate-700 font-semibold",
     white:
-      "bg-white hover:bg-slate-100 text-indigo-900 shadow-lg hover:shadow-xl focus:ring-indigo-300 font-bold",
+      "bg-white hover:bg-slate-100 text-slate-900 shadow-md hover:shadow-lg focus:ring-slate-300 font-bold",
     outline:
-      "border border-slate-300 hover:border-slate-400 bg-white text-slate-700 hover:bg-slate-50 focus:ring-slate-400",
+      "border border-slate-300 hover:border-[#ed1d24] hover:text-[#ed1d24] bg-white text-slate-700 hover:bg-red-50/40 focus:ring-red-300 font-medium",
     danger:
-      "bg-rose-600 hover:bg-rose-700 text-white shadow-sm hover:shadow-rose-500/20 focus:ring-rose-500",
+      "bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-rose-500/20 focus:ring-rose-500 font-semibold",
     dangerOutline:
-      "border border-rose-200 hover:bg-rose-50 text-rose-600 focus:ring-rose-400",
+      "border border-rose-200 hover:bg-rose-50 text-rose-600 focus:ring-rose-400 font-medium",
     ghost:
-      "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 focus:ring-slate-400",
+      "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 focus:ring-slate-400 font-medium",
     success:
-      "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm focus:ring-emerald-500",
+      "bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs focus:ring-emerald-500 font-semibold",
   };
 
   return (

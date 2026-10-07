@@ -140,10 +140,10 @@ export const ProductForm = ({
         <textarea
           rows={4}
           placeholder="Detailed product features, specifications, and warranty information..."
-          className={`w-full bg-white border text-slate-900 text-sm rounded-xl p-3.5 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+          className={`w-full bg-white border text-slate-900 text-sm rounded-lg p-3.5 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
             errors.description
               ? "border-rose-300 focus:border-rose-500 focus:ring-rose-500/20"
-              : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20"
+              : "border-slate-200 focus:border-[#ed1d24] focus:ring-[#ed1d24]/10"
           }`}
           {...register("description")}
         />
@@ -181,10 +181,10 @@ export const ProductForm = ({
             Category <span className="text-rose-500">*</span>
           </label>
           <select
-            className={`w-full bg-white border text-slate-900 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 ${
+            className={`w-full bg-white border text-slate-900 text-sm rounded-lg px-3.5 py-2.5 focus:outline-none focus:ring-2 ${
               errors.category
                 ? "border-rose-300 focus:border-rose-500 focus:ring-rose-500/20"
-                : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20"
+                : "border-slate-200 focus:border-[#ed1d24] focus:ring-[#ed1d24]/10"
             }`}
             {...register("category")}
           >
@@ -218,7 +218,7 @@ export const ProductForm = ({
           <label className="flex items-center gap-2.5 cursor-pointer select-none">
             <input
               type="checkbox"
-              className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 focus:ring-2"
+              className="w-4 h-4 text-[#ed1d24] rounded border-slate-300 focus:ring-[#ed1d24] focus:ring-2"
               {...register("isActive")}
             />
             <span className="text-xs font-semibold text-slate-700">
@@ -236,7 +236,7 @@ export const ProductForm = ({
         <textarea
           rows={3}
           placeholder="https://images.unsplash.com/photo-example-1&#10;https://images.unsplash.com/photo-example-2"
-          className="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-xl p-3.5 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:border-indigo-500 focus:ring-indigo-500/20 font-mono text-xs"
+          className="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-lg p-3.5 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:border-[#ed1d24] focus:ring-[#ed1d24]/10 font-mono text-xs"
           {...register("imagesInput")}
         />
         <p className="text-[11px] text-slate-500">

@@ -11,7 +11,7 @@ const POLLING_INTERVAL_MS = 6000; // 6 seconds for fast detection
  * 2. An existing order is cancelled by the customer.
  */
 export const useAdminOrderPolling = () => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const addNewOrderNotification = useAdminNotificationStore(
     (state) => state.addNewOrderNotification
   );
@@ -24,8 +24,8 @@ export const useAdminOrderPolling = () => {
   const knownOrdersMapRef = useRef(new Map());
 
   useEffect(() => {
-    // Only run if user is logged in as Admin
-    if (!isAuthenticated || !isAdmin) {
+    // Only run if user is logged in as an Operational Admin
+    if (!isAuthenticated || user?.role !== "admin") {
       isInitializedRef.current = false;
       knownOrdersMapRef.current.clear();
       return;
@@ -104,7 +104,7 @@ export const useAdminOrderPolling = () => {
     };
   }, [
     isAuthenticated,
-    isAdmin,
+    user?.role,
     addNewOrderNotification,
     addOrderCancellationNotification,
   ]);

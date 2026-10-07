@@ -76,6 +76,11 @@ const updateOrderStatusBodySchema = schema
       ],
       "Order status must be one of: pending, confirmed, processing, shipped, delivered, cancelled"
     ),
+    reason: schema
+      .string()
+      .min(1, "Cancellation reason cannot be empty")
+      .max(250, "Cancellation reason cannot exceed 250 characters")
+      .optional(),
   })
   .strict();
 

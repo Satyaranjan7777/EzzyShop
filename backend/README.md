@@ -162,13 +162,19 @@ All protected endpoints require an `Authorization` header with a valid JWT token
 Authorization: Bearer <your_jwt_token>
 ```
 
-### Setting up an Admin User:
+### Setting up the Master & Admin Users:
 
-1. Register a new user via `POST /api/v1/auth/register` (default role is `user`).
-2. Alternatively, provide `"role": "admin"` in the register body, or update the user's `role` field directly in MongoDB:
-   ```javascript
-   db.users.updateOne({ email: "admin@example.com" }, { $set: { role: "admin" } });
+1. **Seed the Master Account**:
+   Run the master seed command to create the master administrator:
+   ```bash
+   npm run seed:master
    ```
+   - **Master Email**: `satyaranjan@gmail.com`
+   - **Master Password**: `Master@2026`
+
+2. **Admin Provisioning**:
+   - Public registration (`/auth/register`) only creates standard customer (`user`) accounts. Users **cannot** register as admin.
+   - Only the **Master Account** can create, activate, deactivate, and delete administrators via `POST /api/v1/master/admins` or through the Master Console UI at `/master/login`.
 
 ---
 
@@ -259,6 +265,23 @@ Base URL: `http://localhost:5001/api/v1`
 | `POST` | `/auth/register` | Public | Register a new user | `{ "name": "John", "email": "john@example.com", "password": "password123", "role": "user" }` |
 | `POST` | `/auth/login` | Public | Login & receive JWT | `{ "email": "john@example.com", "password": "password123" }` |
 | `GET` | `/auth/me` | Private | Get current authenticated user profile | — |
+
+---
+
+### Master Governance, Audit Trail & Admin Provisioning (`/master`)
+| Method | Endpoint | Access | Description | Request Body |
+|---|---|---|---|---|
+| `POST` | `/master/login` | Public (Master Only) | Authenticate Master and obtain JWT | `{ "email": "satyaranjan@gmail.com", "password": "..." }` |
+| `GET` | `/master/overview` | Master | Executive dashboard metrics (revenue, orders, admins, catalog) | — |
+| `GET` | `/master/activities` | Master | Global audit trail of all operational admin activities | — |
+| `GET` | `/master/admins` | Master | List all administrators (supports `?search=...`) | — |
+| `POST` | `/master/admins` | Master | Provision a new administrator account | `{ "name": "Admin Name", "email": "admin@example.com", "password": "..." }` |
+| `GET` | `/master/admins/:id` | Master | Get detailed admin info | — |
+| `GET` | `/master/admins/:id/activities` | Master | View activity history stream for a specific administrator | — |
+| `PUT` | `/master/admins/:id` | Master | Update admin status, email, name, or password | `{ "name": "...", "isActive": false }` |
+| `DELETE` | `/master/admins/:id` | Master | Permanently revoke/delete an administrator | — |
+
+> **Enterprise Separation of Duties**: Master accounts have governance and audit oversight privileges only. Catalog product modifications (`POST`, `PATCH`, `DELETE` on `/products`) are strictly restricted to Operational Admins.
 
 ---
 

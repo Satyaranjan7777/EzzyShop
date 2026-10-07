@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
-// Ensure environment variables are loaded
-dotenv.config();
+// Ensure environment variables are loaded silently
+dotenv.config({ quiet: true });
 
 /**
  * Safely parse integer from environment variable with fallback default

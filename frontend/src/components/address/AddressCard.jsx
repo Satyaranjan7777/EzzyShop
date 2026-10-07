@@ -27,12 +27,12 @@ export const AddressCard = ({
   return (
     <div
       onClick={isSelectable && onSelect ? () => onSelect(address) : undefined}
-      className={`relative p-5 rounded-2xl border transition-all duration-200 bg-white ${
+      className={`relative p-4 sm:p-5 rounded-xl border transition-all duration-200 bg-white ${
         isSelectable ? "cursor-pointer" : ""
       } ${
         isSelected
-          ? "border-indigo-600 ring-2 ring-indigo-600/20 shadow-md bg-indigo-50/20"
-          : "border-slate-200/80 hover:border-slate-300 shadow-sm"
+          ? "border-[#ed1d24] ring-2 ring-red-500/20 shadow-xs bg-red-50/10"
+          : "border-slate-200 hover:border-slate-300 shadow-xs"
       }`}
     >
       {/* Header with Name and Default Badge */}
@@ -42,20 +42,20 @@ export const AddressCard = ({
             <div
               className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
                 isSelected
-                  ? "border-indigo-600 bg-indigo-600 text-white"
+                  ? "border-[#ed1d24] bg-[#ed1d24] text-white"
                   : "border-slate-300 bg-white"
               }`}
             >
-              {isSelected && <CheckCircle2 className="w-4 h-4" />}
+              {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
             </div>
           )}
-          <h4 className="font-bold text-slate-900 text-base font-heading">
+          <h4 className="font-bold text-slate-900 text-sm sm:text-base font-heading">
             {fullName}
           </h4>
         </div>
 
         {isDefault && (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
             <Star className="w-3 h-3 fill-emerald-600 text-emerald-600" />
             Default
           </span>
@@ -87,7 +87,7 @@ export const AddressCard = ({
                 e.stopPropagation();
                 onSetDefault(_id);
               }}
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline"
+              className="text-xs font-semibold text-[#ed1d24] hover:text-[#d32f2f] hover:underline"
             >
               Set as Default
             </button>
@@ -102,7 +102,7 @@ export const AddressCard = ({
                 e.stopPropagation();
                 onEdit(address);
               }}
-              className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="p-1.5 text-slate-500 hover:text-[#ed1d24] hover:bg-red-50 rounded-lg transition-colors"
               title="Edit Address"
               aria-label="Edit address"
             >

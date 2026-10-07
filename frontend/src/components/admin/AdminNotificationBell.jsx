@@ -50,14 +50,14 @@ export const AdminNotificationBell = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 sm:p-3 rounded-2xl text-slate-700 hover:text-indigo-600 bg-slate-100/70 hover:bg-indigo-50 border border-slate-200/60 hover:border-indigo-200 transition-all duration-200 focus:outline-none group cursor-pointer"
+        className="relative p-2.5 rounded-xl text-slate-700 hover:text-[#ed1d24] bg-slate-100/70 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition-all duration-200 focus:outline-none group cursor-pointer"
         aria-label="Order Notifications"
         title="Store Alerts & Live Orders"
       >
         <Bell className="w-5 h-5 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
 
         {unreadCount > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-rose-600 text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-md shadow-rose-600/30 animate-pulse ring-2 ring-white">
+          <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ed1d24] text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-md shadow-[#ed1d24]/30 animate-pulse ring-2 ring-white">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -65,15 +65,15 @@ export const AdminNotificationBell = () => {
 
       {/* Notification Dropdown Panel */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 border border-slate-100 z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden divide-y divide-slate-100">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 border border-slate-100 z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden divide-y divide-slate-100">
           {/* Header */}
-          <div className="p-4 bg-slate-50/70 flex items-center justify-between gap-2">
+          <div className="p-4 bg-slate-50 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-extrabold text-slate-900 font-heading">
+              <span className="text-sm font-bold text-slate-900 font-heading">
                 Live Store Alerts
               </span>
               {unreadCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 animate-pulse">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-100 text-[#ed1d24] animate-pulse">
                   {unreadCount} new
                 </span>
               )}
@@ -86,7 +86,7 @@ export const AdminNotificationBell = () => {
                 onClick={toggleSound}
                 className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                   soundEnabled
-                    ? "text-indigo-600 hover:bg-indigo-50"
+                    ? "text-[#ed1d24] hover:bg-red-50"
                     : "text-slate-400 hover:bg-slate-100"
                 }`}
                 title={soundEnabled ? "Mute notification chime" : "Enable notification chime"}
@@ -103,7 +103,7 @@ export const AdminNotificationBell = () => {
                 <button
                   type="button"
                   onClick={markAllAsRead}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#ed1d24] hover:text-[#d32f2f] hover:underline cursor-pointer"
                 >
                   <CheckCheck className="w-3.5 h-3.5" />
                   <span>Mark all read</span>
@@ -138,7 +138,7 @@ export const AdminNotificationBell = () => {
                       !n.isRead
                         ? isCancellation
                           ? "bg-rose-50/40"
-                          : "bg-indigo-50/30"
+                          : "bg-red-50/20"
                         : ""
                     }`}
                   >
@@ -147,7 +147,7 @@ export const AdminNotificationBell = () => {
                         isCancellation
                           ? "bg-rose-100 text-rose-600"
                           : !n.isRead
-                          ? "bg-indigo-600 text-white"
+                          ? "bg-[#ed1d24] text-white"
                           : "bg-slate-100 text-slate-500"
                       }`}
                     >
@@ -185,7 +185,7 @@ export const AdminNotificationBell = () => {
                             {n.customerName}
                           </span>{" "}
                           placed an order for{" "}
-                          <span className="font-bold text-indigo-600">
+                          <span className="font-bold text-[#ed1d24]">
                             {n.totalFormatted}
                           </span>
                         </p>
@@ -204,7 +204,7 @@ export const AdminNotificationBell = () => {
                         {!n.isRead && (
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              isCancellation ? "bg-rose-600" : "bg-indigo-600"
+                              isCancellation ? "bg-rose-600" : "bg-[#ed1d24]"
                             }`}
                           />
                         )}
@@ -221,7 +221,7 @@ export const AdminNotificationBell = () => {
             <Link
               to="/admin/orders"
               onClick={() => setIsOpen(false)}
-              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#ed1d24] hover:text-[#d32f2f] hover:underline"
             >
               <span>Manage All Orders in Admin Panel</span>
               <ArrowRight className="w-3.5 h-3.5" />

@@ -63,7 +63,7 @@ export const ProductSearch = ({
         value={searchTerm}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-2xl pl-10 pr-10 py-2.5 shadow-xs placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+        className="w-full bg-white border border-slate-300 text-slate-900 text-sm rounded-lg pl-10 pr-10 py-2.5 shadow-xs placeholder:text-slate-400 focus:outline-none focus:border-[#ed1d24] focus:ring-1 focus:ring-[#ed1d24] transition-all"
       />
 
       {searchTerm && (

@@ -11,10 +11,12 @@ const formatCartResponse = (cart) => {
   let subtotal = 0;
   let totalItems = 0;
 
-  const items = cart.items.map((item) => {
+  const items = [];
+
+  for (const item of cart.items) {
     const product = item.product;
-    if (!product || typeof product !== "object") {
-      return item;
+    if (!product || typeof product !== "object" || !product._id) {
+      continue;
     }
 
     const unitPrice =
@@ -28,7 +30,7 @@ const formatCartResponse = (cart) => {
     subtotal += itemTotal;
     totalItems += item.quantity;
 
-    return {
+    items.push({
       product: {
         _id: product._id,
         title: product.title,
@@ -42,8 +44,8 @@ const formatCartResponse = (cart) => {
       },
       quantity: item.quantity,
       itemTotal,
-    };
-  });
+    });
+  }
 
   return {
     _id: cart._id,

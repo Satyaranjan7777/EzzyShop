@@ -50,23 +50,23 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50">
+    <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-7 bg-white p-8 sm:p-10 rounded-2xl border border-slate-200 shadow-xs">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 mb-2">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#ed1d24] text-white shadow-md shadow-[#ed1d24]/20 mb-1">
             <Store className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
-            Welcome back
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-heading">
+            Welcome Back
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-xs sm:text-sm text-slate-500">
             Sign in to access your cart, saved addresses, and orders
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           <Input
             label="Email Address"
             required
@@ -95,7 +95,7 @@ export const Login = () => {
             size="lg"
             isLoading={isSubmitting}
             rightIcon={ArrowRight}
-            className="w-full mt-2 shadow-md shadow-indigo-600/20"
+            className="w-full mt-2 shadow-md shadow-[#ed1d24]/20 py-3.5 rounded-xl font-bold"
           >
             Sign In
           </Button>
@@ -107,7 +107,7 @@ export const Login = () => {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+              className="font-bold text-[#ed1d24] hover:text-[#d32f2f] hover:underline"
             >
               Create an account
             </Link>

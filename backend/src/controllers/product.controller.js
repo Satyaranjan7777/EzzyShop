@@ -4,6 +4,7 @@ import Category from "../models/Category.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import logActivity from "../utils/activityLogger.js";
 
 /**
  * Escape special regular expression characters to prevent ReDoS and Regex Injection
@@ -206,11 +207,23 @@ export const createProduct = asyncHandler(async (req, res) => {
     images: Array.isArray(images) ? images : [],
     stock: Number(stock) || 0,
     isActive: isActive !== undefined ? isActive : true,
+    createdBy: req.user ? req.user._id : null,
   });
 
   const populatedProduct = await Product.findById(product._id).populate(
     "category",
     "name slug"
+  );
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "CREATE_PRODUCT",
+    "Product",
+    product._id,
+    product.title,
+    { price: product.price, stock: product.stock, category: foundCategory.name },
+    req
   );
 
   return new ApiResponse(
@@ -269,6 +282,17 @@ export const updateProduct = asyncHandler(async (req, res) => {
     "name slug"
   );
 
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "UPDATE_PRODUCT",
+    "Product",
+    product._id,
+    product.title,
+    { updatedFields: Object.keys(req.body) },
+    req
+  );
+
   return new ApiResponse(
     200,
     "Product updated successfully",
@@ -289,6 +313,17 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
 
   await Product.findByIdAndDelete(req.params.id);
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "DELETE_PRODUCT",
+    "Product",
+    product._id,
+    product.title,
+    {},
+    req
+  );
 
   return new ApiResponse(
     200,

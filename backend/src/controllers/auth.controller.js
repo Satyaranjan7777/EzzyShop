@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import logActivity from "../utils/activityLogger.js";
 
 /**
  * Generate JWT Token Helper
@@ -100,6 +101,19 @@ export const loginUser = asyncHandler(async (req, res) => {
     isActive: user.isActive,
     createdAt: user.createdAt,
   };
+
+  // Log admin activity for Master audit trail
+  if (user.role === "admin") {
+    await logActivity(
+      user,
+      "ADMIN_LOGIN",
+      "Auth",
+      user._id,
+      user.name,
+      { email: user.email },
+      req
+    );
+  }
 
   return new ApiResponse(
     200,

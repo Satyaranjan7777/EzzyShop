@@ -42,12 +42,12 @@ export const Orders = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Header */}
-      <div className="space-y-1 pb-6 border-b border-slate-200/80">
-        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-indigo-600">
+      <div className="space-y-1 pb-6 border-b border-slate-200">
+        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#ed1d24]">
           <Package className="w-3.5 h-3.5" />
           <span>Purchase History</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black text-slate-900 font-heading">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-heading">
           My Orders
         </h1>
         <p className="text-xs sm:text-sm text-slate-500">
@@ -70,7 +70,7 @@ export const Orders = () => {
           onAction={() => navigate("/products")}
         />
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {orders.map((order) => {
             const statusCfg =
               ORDER_STATUS_CONFIG[order.orderStatus] || ORDER_STATUS_CONFIG.pending;
@@ -80,10 +80,10 @@ export const Orders = () => {
             return (
               <div
                 key={order._id}
-                className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden hover:border-indigo-300 hover:shadow-md transition-all duration-300"
+                className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden hover:border-slate-300 hover:shadow-sm transition-all duration-200"
               >
                 {/* Order Top Bar */}
-                <div className="p-5 sm:p-6 bg-slate-50/70 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm">
+                <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm">
                   <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                     <div>
                       <span className="text-slate-400 block text-[10px] font-black uppercase tracking-wider">
@@ -107,7 +107,7 @@ export const Orders = () => {
                       <span className="text-slate-400 block text-[10px] font-black uppercase tracking-wider">
                         Total Amount
                       </span>
-                      <span className="font-black text-slate-900 font-heading">
+                      <span className="font-black text-[#ed1d24] font-heading">
                         {formatCurrency(order.pricing?.total || 0)}
                       </span>
                     </div>
@@ -130,17 +130,17 @@ export const Orders = () => {
                 </div>
 
                 {/* Items Preview */}
-                <div className="p-5 sm:p-6 divide-y divide-slate-100">
+                <div className="p-4 sm:p-5 divide-y divide-slate-100">
                   {order.items?.map((item, idx) => (
                     <div
                       key={idx}
-                      className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
+                      className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
                     >
-                      <div className="flex items-center gap-4 min-w-0">
+                      <div className="flex items-center gap-3.5 min-w-0">
                         <img
                           src={getPrimaryImage(item.image)}
                           alt={item.title}
-                          className="w-14 h-14 rounded-2xl object-cover bg-slate-100 shrink-0 border border-slate-100"
+                          className="w-14 h-14 rounded-lg object-contain bg-[#fbfbfb] shrink-0 border border-slate-200 p-1"
                         />
                         <div className="min-w-0">
                           <h4 className="text-sm font-bold text-slate-800 truncate font-heading">
@@ -160,13 +160,13 @@ export const Orders = () => {
                 </div>
 
                 {/* Order Footer Actions */}
-                <div className="p-4 sm:px-6 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
+                <div className="p-3.5 sm:px-5 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="text-slate-500">
                     Delivering to: <span className="font-bold text-slate-800">{order.shippingAddress?.fullName} ({order.shippingAddress?.city})</span>
                   </span>
 
                   <Link to={`/orders/${order._id}`}>
-                    <Button variant="outline" size="sm" rightIcon={Eye} className="rounded-xl font-bold">
+                    <Button variant="outline" size="sm" rightIcon={Eye} className="rounded-lg font-bold hover:border-[#ed1d24] hover:text-[#ed1d24]">
                       View Order Details
                     </Button>
                   </Link>

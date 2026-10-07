@@ -7,7 +7,7 @@ import {
   deleteProduct,
 } from "../controllers/product.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
-import { adminOnly } from "../middleware/role.middleware.js";
+import { adminOnly, forbidMasterCatalogModification } from "../middleware/role.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
 import {
   createProductValidator,
@@ -26,10 +26,11 @@ const router = express.Router();
 router.get("/", publicLimiter, validate(getProductsQueryValidator), getProducts);
 router.get("/:id", publicLimiter, validate(idParamValidator), getProductById);
 
-// Admin-only routes (looser authenticated rate limit with strict validation)
+// Admin-only routes (strictly forbidden for Master accounts)
 router.post(
   "/",
   authenticate,
+  forbidMasterCatalogModification,
   adminOnly,
   userLimiter,
   validate(createProductValidator),
@@ -38,6 +39,7 @@ router.post(
 router.patch(
   "/:id",
   authenticate,
+  forbidMasterCatalogModification,
   adminOnly,
   userLimiter,
   validate(idParamValidator),
@@ -47,6 +49,7 @@ router.patch(
 router.delete(
   "/:id",
   authenticate,
+  forbidMasterCatalogModification,
   adminOnly,
   userLimiter,
   validate(idParamValidator),

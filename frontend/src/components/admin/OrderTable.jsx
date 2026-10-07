@@ -42,7 +42,7 @@ export const OrderTable = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
@@ -71,7 +71,7 @@ export const OrderTable = ({
                   className="hover:bg-slate-50/70 transition-colors"
                 >
                   {/* Order ID */}
-                  <td className="py-4 px-4 sm:px-6 font-mono text-xs font-semibold text-indigo-600">
+                  <td className="py-4 px-4 sm:px-6 font-mono text-xs font-bold text-[#ed1d24]">
                     <Link
                       to={`/orders/${order._id}`}
                       className="hover:underline"

@@ -6,7 +6,7 @@ import Button from "../../components/common/Button";
 export const NotFound = () => {
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4 py-16">
-      <div className="w-24 h-24 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 font-extrabold text-4xl shadow-inner font-heading">
+      <div className="w-20 h-20 rounded-2xl bg-red-50 text-[#ed1d24] flex items-center justify-center mb-6 font-black text-3xl shadow-2xs font-heading">
         404
       </div>
       <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mb-2">

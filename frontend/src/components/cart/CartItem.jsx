@@ -50,17 +50,17 @@ export const CartItem = ({ item }) => {
   const effectivePrice = product.effectivePrice || (product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price);
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs hover:border-indigo-200 transition-all gap-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-[#ed1d24]/50 transition-all gap-4">
       {/* Product Image & Info */}
       <div className="flex items-center gap-4 min-w-0 flex-1">
         <Link
           to={`/products/${product._id}`}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-100/80 overflow-hidden shrink-0 border border-slate-100 group"
+          className="w-18 h-18 sm:w-20 sm:h-20 rounded-lg bg-[#fbfbfb] overflow-hidden shrink-0 border border-slate-200 group flex items-center justify-center p-1"
         >
           <img
             src={imageUrl}
             alt={product.title}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
+            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src =
@@ -72,13 +72,13 @@ export const CartItem = ({ item }) => {
         <div className="flex flex-col min-w-0 space-y-1">
           <Link
             to={`/products/${product._id}`}
-            className="text-sm sm:text-base font-bold text-slate-800 hover:text-indigo-600 transition-colors line-clamp-2 font-heading"
+            className="text-xs sm:text-sm font-semibold text-slate-800 hover:text-[#ed1d24] transition-colors line-clamp-2"
           >
             {product.title}
           </Link>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold text-slate-900 font-heading">
+            <span className="text-sm font-extrabold text-[#ed1d24]">
               {formatCurrency(effectivePrice)}
             </span>
             {product.discountPrice && product.discountPrice > 0 && product.price > product.discountPrice && (
@@ -89,7 +89,7 @@ export const CartItem = ({ item }) => {
           </div>
 
           {product.stock <= 5 && (
-            <p className="text-[11px] font-bold text-amber-600">
+            <p className="text-[10px] font-bold text-amber-600">
               Only {product.stock} left in stock
             </p>
           )}
@@ -97,20 +97,20 @@ export const CartItem = ({ item }) => {
       </div>
 
       {/* Quantity Selector & Item Total & Remove */}
-      <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+      <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
         {/* Quantity Controls */}
-        <div className="flex items-center border border-slate-200 rounded-2xl bg-slate-50 p-1 shadow-xs">
+        <div className="flex items-center border border-slate-300 rounded-lg bg-white p-0.5 shadow-xs">
           <button
             type="button"
             onClick={handleDecrement}
             disabled={isUpdating}
-            className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-600 hover:text-slate-900 shadow-xs border border-slate-200/60 disabled:opacity-50 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-40 transition-colors cursor-pointer"
             aria-label="Decrease quantity"
           >
-            <Minus className="w-3.5 h-3.5" />
+            <Minus className="w-3 h-3" />
           </button>
 
-          <span className="w-10 text-center text-xs font-black text-slate-800">
+          <span className="w-8 text-center text-xs font-bold text-slate-800">
             {quantity}
           </span>
 
@@ -118,16 +118,16 @@ export const CartItem = ({ item }) => {
             type="button"
             onClick={handleIncrement}
             disabled={isUpdating || quantity >= maxStock}
-            className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-600 hover:text-slate-900 shadow-xs border border-slate-200/60 disabled:opacity-50 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded bg-slate-50 text-slate-600 hover:text-slate-900 disabled:opacity-40 transition-colors cursor-pointer"
             aria-label="Increase quantity"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3 h-3" />
           </button>
         </div>
 
         {/* Total Price */}
-        <div className="text-right min-w-[80px]">
-          <span className="text-base font-black text-slate-900 font-heading">
+        <div className="text-right min-w-[70px]">
+          <span className="text-sm sm:text-base font-extrabold text-slate-900">
             {formatCurrency(itemTotal || effectivePrice * quantity)}
           </span>
         </div>
@@ -137,7 +137,7 @@ export const CartItem = ({ item }) => {
           type="button"
           onClick={handleRemove}
           disabled={isUpdating}
-          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
+          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
           title="Remove from Cart"
           aria-label="Remove item"
         >

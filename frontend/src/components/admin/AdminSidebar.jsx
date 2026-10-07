@@ -17,7 +17,7 @@ export const AdminSidebar = () => {
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
       isActive
-        ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/20 font-semibold"
+        ? "bg-[#ed1d24] text-white shadow-sm shadow-[#ed1d24]/20 font-semibold"
         : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
     }`;
 
@@ -31,14 +31,14 @@ export const AdminSidebar = () => {
             className="flex items-center gap-2.5 focus:outline-none"
             onClick={closeAdminSidebar}
           >
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-[#ed1d24] text-white flex items-center justify-center shadow-sm">
               <Store className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-base tracking-tight text-slate-900 font-heading">
                 EzzyShop
               </span>
-              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-[#ed1d24] uppercase tracking-wider">
                 Admin Panel
               </span>
             </div>

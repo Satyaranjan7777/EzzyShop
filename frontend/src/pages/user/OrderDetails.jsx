@@ -110,7 +110,7 @@ export const OrderDetails = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
         <Link
           to="/orders"
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-[#ed1d24] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to My Orders
@@ -156,7 +156,7 @@ export const OrderDetails = () => {
       <div className="space-y-4 pb-6 border-b border-slate-200/80">
         <Link
           to="/orders"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#ed1d24] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to all orders
@@ -188,7 +188,7 @@ export const OrderDetails = () => {
                 size="sm"
                 leftIcon={Ban}
                 onClick={handleOpenCancelModal}
-                className="font-bold rounded-xl"
+                className="font-bold rounded-lg"
               >
                 Cancel Order
               </Button>
@@ -198,7 +198,7 @@ export const OrderDetails = () => {
               <span className="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">
                 Total Amount
               </span>
-              <span className="text-2xl sm:text-3xl font-black text-indigo-600 font-heading">
+              <span className="text-2xl sm:text-3xl font-black text-[#ed1d24] font-heading">
                 {formatCurrency(order.pricing?.total || 0)}
               </span>
             </div>
@@ -240,7 +240,7 @@ export const OrderDetails = () => {
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+        <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-6">
             Delivery Progression
           </h3>
@@ -255,7 +255,7 @@ export const OrderDetails = () => {
                   <div
                     className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-xs transition-all ${
                       isCompleted
-                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                        ? "bg-[#ed1d24] text-white shadow-md shadow-[#ed1d24]/20"
                         : "bg-slate-100 text-slate-400 border border-slate-200"
                     }`}
                   >
@@ -265,7 +265,7 @@ export const OrderDetails = () => {
                     <p
                       className={`text-xs font-bold capitalize ${
                         isCurrent
-                          ? "text-indigo-600"
+                          ? "text-[#ed1d24]"
                           : isCompleted
                           ? "text-slate-800"
                           : "text-slate-400"
@@ -274,7 +274,7 @@ export const OrderDetails = () => {
                       {step}
                     </p>
                     {isCurrent && (
-                      <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider block">
+                      <span className="text-[10px] font-bold text-[#ed1d24] uppercase tracking-wider block">
                         Current Status
                       </span>
                     )}
@@ -286,13 +286,13 @@ export const OrderDetails = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Left 2 Cols: Items snapshot & Delivery details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Purchased Items Snapshot */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <h3 className="text-lg font-black text-slate-900 font-heading pb-4 border-b border-slate-100 flex items-center gap-2">
-              <Package className="w-5 h-5 text-indigo-600" />
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-5">
+            <h3 className="text-base font-black text-slate-900 font-heading pb-3 border-b border-slate-100 flex items-center gap-2">
+              <Package className="w-5 h-5 text-[#ed1d24]" />
               Purchased Items ({order.items?.length || 0})
             </h3>
 
@@ -300,15 +300,15 @@ export const OrderDetails = () => {
               {order.items?.map((item, idx) => (
                 <div
                   key={idx}
-                  className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
+                  className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
+                  <div className="flex items-center gap-3.5 min-w-0">
                     <img
                       src={getPrimaryImage(item.image)}
                       alt={item.title}
-                      className="w-16 h-16 rounded-2xl object-cover bg-slate-100 shrink-0 border border-slate-100"
+                      className="w-14 h-14 rounded-lg object-contain bg-[#fbfbfb] shrink-0 border border-slate-200 p-1"
                     />
-                    <div className="min-w-0 space-y-1">
+                    <div className="min-w-0 space-y-0.5">
                       <h4 className="text-sm font-bold text-slate-800 line-clamp-1 font-heading">
                         {item.title}
                       </h4>
@@ -327,9 +327,9 @@ export const OrderDetails = () => {
           </div>
 
           {/* Shipping Address Snapshot */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-            <h3 className="text-lg font-black text-slate-900 font-heading pb-4 border-b border-slate-100 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-indigo-600" />
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-3">
+            <h3 className="text-base font-black text-slate-900 font-heading pb-3 border-b border-slate-100 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-[#ed1d24]" />
               Shipping Destination
             </h3>
 
@@ -356,14 +356,14 @@ export const OrderDetails = () => {
         {/* Right Col: Payment & Financial Breakdown */}
         <div className="lg:col-span-1 space-y-6">
           {/* Payment Method Card */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Payment Details
             </h3>
 
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-100">
               <div className="flex items-center gap-3">
-                <Banknote className="w-5 h-5 text-indigo-600" />
+                <Banknote className="w-5 h-5 text-[#ed1d24]" />
                 <span className="text-sm font-bold text-slate-800">
                   {order.payment?.method || "Cash on Delivery"}
                 </span>
@@ -378,7 +378,7 @@ export const OrderDetails = () => {
           </div>
 
           {/* Pricing Breakdown */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-100">
               Payment Breakdown
             </h3>
@@ -408,7 +408,7 @@ export const OrderDetails = () => {
                 <span className="text-base font-black text-slate-900 font-heading">
                   Total Payable
                 </span>
-                <span className="text-2xl font-black text-indigo-600 font-heading">
+                <span className="text-2xl font-black text-[#ed1d24] font-heading">
                   {formatCurrency(order.pricing?.total || 0)}
                 </span>
               </div>
@@ -432,7 +432,7 @@ export const OrderDetails = () => {
           }}
           className="space-y-4 pt-1"
         >
-          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+          <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               Upon cancellation, reserved item quantities will be returned to inventory and delivery processing will be stopped immediately.
@@ -447,7 +447,7 @@ export const OrderDetails = () => {
               value={cancelReasonOption}
               onChange={(e) => setCancelReasonOption(e.target.value)}
               disabled={isCancelling}
-              className="w-full bg-white border border-slate-300 text-slate-900 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium cursor-pointer"
+              className="w-full bg-white border border-slate-300 text-slate-900 text-sm rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-[#ed1d24] focus:ring-2 focus:ring-[#ed1d24]/10 transition-all font-medium cursor-pointer"
             >
               <option value="Changed my mind">Changed my mind</option>
               <option value="Ordered by mistake">Ordered by mistake</option>
@@ -468,7 +468,7 @@ export const OrderDetails = () => {
                 disabled={isCancelling}
                 rows={3}
                 placeholder="Tell us why you are cancelling..."
-                className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-xl p-3 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg p-3 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-[#ed1d24] focus:ring-2 focus:ring-[#ed1d24]/10 transition-all resize-none"
               />
               <div className="text-right text-[10px] text-slate-400 font-semibold">
                 {customCancelReason.length}/250
@@ -483,7 +483,7 @@ export const OrderDetails = () => {
               size="sm"
               onClick={handleCloseCancelModal}
               disabled={isCancelling}
-              className="rounded-xl font-bold text-slate-600 hover:text-slate-900"
+              className="rounded-lg font-bold text-slate-600 hover:text-slate-900"
             >
               Keep Order
             </Button>
@@ -494,7 +494,7 @@ export const OrderDetails = () => {
               isLoading={isCancelling}
               disabled={isCancelling}
               leftIcon={Ban}
-              className="rounded-xl font-bold shadow-md shadow-rose-600/20"
+              className="rounded-lg font-bold shadow-md shadow-rose-600/20"
             >
               {isCancelling ? "Cancelling..." : "Confirm Cancellation"}
             </Button>

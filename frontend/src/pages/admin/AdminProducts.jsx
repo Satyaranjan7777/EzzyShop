@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Search, Package } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, Package, ShieldCheck } from "lucide-react";
+import useAuth from "../../hooks/useAuth";
 import { productService } from "../../services/product.service";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getErrorMessage, getPrimaryImage } from "../../utils/helpers";
@@ -12,6 +13,7 @@ import Button from "../../components/common/Button";
 import toast from "react-hot-toast";
 
 export const AdminProducts = () => {
+  const { isMaster } = useAuth();
   const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,14 +119,26 @@ export const AdminProducts = () => {
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          leftIcon={Plus}
-          onClick={handleOpenCreateModal}
-        >
-          Add New Product
-        </Button>
+        {!isMaster && (
+          <Button
+            variant="primary"
+            leftIcon={Plus}
+            onClick={handleOpenCreateModal}
+          >
+            Add New Product
+          </Button>
+        )}
       </div>
+
+      {/* Master Read-Only Governance Notice */}
+      {isMaster && (
+        <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex items-center gap-3 text-amber-800 shadow-xs">
+          <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0" />
+          <p className="text-xs">
+            <strong className="font-bold">Master Governance Mode:</strong> You are viewing the product catalog in read-only mode. In accordance with enterprise separation of duties, modifying product details, pricing, and stock is strictly restricted to Operational Admins.
+          </p>
+        </div>
+      )}
 
       {/* Search bar */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2 max-w-md">
@@ -135,7 +149,7 @@ export const AdminProducts = () => {
             placeholder="Search products by title..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-xl pl-10 pr-4 py-2.5 shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full bg-white border border-slate-200 text-slate-900 text-sm rounded-lg pl-10 pr-4 py-2.5 shadow-2xs focus:outline-none focus:border-[#ed1d24] focus:ring-2 focus:ring-[#ed1d24]/10"
           />
         </div>
         <Button type="submit" variant="secondary" size="md">
@@ -147,7 +161,7 @@ export const AdminProducts = () => {
       {isLoading && products.length === 0 ? (
         <Loader text="Loading product catalog..." />
       ) : products.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 space-y-3">
+        <div className="p-12 text-center bg-white rounded-xl border border-slate-200 space-y-3">
           <Package className="w-10 h-10 text-slate-300 mx-auto" />
           <h3 className="text-base font-bold text-slate-800 font-heading">
             No products found
@@ -167,7 +181,7 @@ export const AdminProducts = () => {
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[750px]">
               <thead>
@@ -190,11 +204,11 @@ export const AdminProducts = () => {
                     >
                       {/* Product details */}
                       <td className="py-3.5 px-4 sm:px-6">
-                        <div className="flex items-center gap-3.5">
+                        <div className="flex items-center gap-3">
                           <img
                             src={imageUrl}
                             alt={product.title}
-                            className="w-12 h-12 rounded-xl object-cover bg-slate-100 shrink-0 border border-slate-100"
+                            className="w-12 h-12 rounded-lg object-contain bg-[#fbfbfb] shrink-0 border border-slate-200 p-0.5"
                           />
                           <div className="min-w-0 max-w-xs">
                             <span className="font-bold text-slate-900 line-clamp-1">
@@ -215,7 +229,7 @@ export const AdminProducts = () => {
                       {/* Price */}
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col">
-                          <span className="font-bold text-slate-900">
+                          <span className="font-bold text-[#ed1d24]">
                             {formatCurrency(
                               product.discountPrice && product.discountPrice > 0
                                 ? product.discountPrice
@@ -260,24 +274,30 @@ export const AdminProducts = () => {
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 sm:px-6 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(product)}
-                            className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                            title="Edit Product"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setDeletingProduct(product)}
-                            className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                        {isMaster ? (
+                          <span className="text-[11px] font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">
+                            Read-Only (Master)
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditModal(product)}
+                              className="p-1.5 text-slate-500 hover:text-[#ed1d24] hover:bg-red-50 rounded-lg transition-colors"
+                              title="Edit Product"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingProduct(product)}
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                              title="Delete Product"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );

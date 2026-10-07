@@ -3,6 +3,7 @@ import Product from "../models/Product.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import logActivity from "../utils/activityLogger.js";
 
 /**
  * Escape special regular expression characters
@@ -85,7 +86,19 @@ export const createCategory = asyncHandler(async (req, res) => {
     name: normalizedName,
     slug: generatedSlug,
     isActive: isActive !== undefined ? isActive : true,
+    createdBy: req.user ? req.user._id : null,
   });
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "CREATE_CATEGORY",
+    "Category",
+    category._id,
+    category.name,
+    { slug: category.slug },
+    req
+  );
 
   return new ApiResponse(
     201,
@@ -107,26 +120,42 @@ export const updateCategory = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Category not found");
   }
 
-  if (name && name.trim() !== category.name) {
-    const normalizedName = name.trim();
+  const normalizedName = name !== undefined ? name.trim() : null;
+  const targetSlug = slug
+    ? generateSlug(slug)
+    : normalizedName && normalizedName !== category.name
+    ? generateSlug(normalizedName)
+    : null;
+
+  const duplicateOr = [];
+  if (normalizedName && normalizedName !== category.name) {
     const safeName = escapeRegex(normalizedName);
+    duplicateOr.push({ name: { $regex: new RegExp(`^${safeName}$`, "i") } });
+  }
+  if (targetSlug && targetSlug !== category.slug) {
+    duplicateOr.push({ slug: targetSlug });
+  }
+
+  if (duplicateOr.length > 0) {
     const existing = await Category.findOne({
-      name: { $regex: new RegExp(`^${safeName}$`, "i") },
       _id: { $ne: category._id },
+      $or: duplicateOr,
     });
 
     if (existing) {
-      throw new ApiError(400, "Category with this name already exists");
-    }
-
-    category.name = normalizedName;
-    if (!slug) {
-      category.slug = generateSlug(normalizedName);
+      if (normalizedName && existing.name.toLowerCase() === normalizedName.toLowerCase()) {
+        throw new ApiError(400, "Category with this name already exists");
+      }
+      throw new ApiError(400, "Category with this slug already exists");
     }
   }
 
-  if (slug) {
-    category.slug = generateSlug(slug);
+  if (normalizedName) {
+    category.name = normalizedName;
+  }
+
+  if (targetSlug) {
+    category.slug = targetSlug;
   }
 
   if (isActive !== undefined) {
@@ -134,6 +163,17 @@ export const updateCategory = asyncHandler(async (req, res) => {
   }
 
   await category.save();
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "UPDATE_CATEGORY",
+    "Category",
+    category._id,
+    category.name,
+    { updatedFields: Object.keys(req.body) },
+    req
+  );
 
   return new ApiResponse(
     200,
@@ -164,6 +204,17 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   }
 
   await Category.findByIdAndDelete(req.params.id);
+
+  // Log admin activity for Master audit trail
+  await logActivity(
+    req.user,
+    "DELETE_CATEGORY",
+    "Category",
+    category._id,
+    category.name,
+    {},
+    req
+  );
 
   return new ApiResponse(
     200,

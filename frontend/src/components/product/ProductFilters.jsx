@@ -41,15 +41,13 @@ export const ProductFilters = ({
     Boolean(inStockOnly);
 
   return (
-    <div className={`bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-6 ${className}`}>
+    <div className={`bg-white rounded-xl p-5 border border-slate-200 shadow-xs space-y-5 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <SlidersHorizontal className="w-4 h-4" />
-          </div>
-          <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 font-heading">
-            Filter Catalog
+          <SlidersHorizontal className="w-4 h-4 text-[#ed1d24]" />
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 font-heading">
+            Filter Products
           </h3>
         </div>
 
@@ -57,7 +55,7 @@ export const ProductFilters = ({
           <button
             type="button"
             onClick={onResetFilters}
-            className="flex items-center gap-1 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg transition-colors focus:outline-none"
+            className="flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 px-2 py-0.5 rounded transition-colors focus:outline-none cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             Reset
@@ -66,10 +64,10 @@ export const ProductFilters = ({
       </div>
 
       {/* Sort By Dropdown */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <label
           htmlFor="product-sort-select"
-          className="text-xs font-bold uppercase tracking-wider text-slate-500 block"
+          className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block"
         >
           Sort Ordering
         </label>
@@ -77,7 +75,7 @@ export const ProductFilters = ({
           id="product-sort-select"
           value={selectedSort}
           onChange={(e) => onFilterChange({ sort: e.target.value })}
-          className="w-full bg-slate-50 border border-slate-200/80 text-slate-800 text-sm font-semibold rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all cursor-pointer shadow-xs"
+          className="w-full bg-[#f8f9fa] border border-slate-200 text-slate-800 text-xs font-semibold rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#ed1d24] focus:bg-white transition-all cursor-pointer shadow-xs"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -88,19 +86,19 @@ export const ProductFilters = ({
       </div>
 
       {/* Categories */}
-      <div className="space-y-3">
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+      <div className="space-y-2">
+        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
           Departments
         </label>
 
-        <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+        <div className="space-y-1 max-h-64 overflow-y-auto pr-1">
           <button
             type="button"
             onClick={() => onFilterChange({ category: "" })}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold text-left transition-all ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all cursor-pointer ${
               !selectedCategory
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-[#ed1d24] text-white font-bold shadow-xs"
+                : "text-slate-600 hover:bg-slate-50 hover:text-[#ed1d24]"
             }`}
           >
             <span>All Categories</span>
@@ -118,10 +116,10 @@ export const ProductFilters = ({
                   key={cat._id}
                   type="button"
                   onClick={() => onFilterChange({ category: cat.slug || cat._id })}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold text-left transition-all ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-indigo-600 text-white shadow-xs"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-[#ed1d24] text-white font-bold shadow-xs"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-[#ed1d24]"
                   }`}
                 >
                   <span className="truncate">{cat.name}</span>
@@ -134,15 +132,15 @@ export const ProductFilters = ({
       </div>
 
       {/* Availability / In Stock Checkbox */}
-      <div className="pt-4 border-t border-slate-100">
-        <label className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200/60 cursor-pointer select-none transition-colors">
+      <div className="pt-3 border-t border-slate-100">
+        <label className="flex items-center gap-2.5 p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100/70 border border-slate-200/60 cursor-pointer select-none transition-colors">
           <input
             type="checkbox"
             checked={inStockOnly}
             onChange={(e) =>
               onFilterChange({ inStock: e.target.checked ? "true" : "" })
             }
-            className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 focus:ring-2"
+            className="w-4 h-4 text-[#ed1d24] accent-[#ed1d24] rounded border-slate-300 focus:ring-[#ed1d24]"
           />
           <span className="text-xs font-bold text-slate-700">
             In-Stock Items Only

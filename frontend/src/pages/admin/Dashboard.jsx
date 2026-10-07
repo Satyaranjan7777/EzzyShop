@@ -88,12 +88,12 @@ export const Dashboard = () => {
   return (
     <div className="space-y-8 pb-12">
       {/* Welcome Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 sm:p-8 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-2xl bg-[#0f172a] text-white p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-slate-800">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#ed1d24]">
             Control Center
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading mt-1">
+          <h1 className="text-2xl sm:text-3xl font-black font-heading mt-1">
             Welcome, {user?.name || "Admin"}!
           </h1>
           <p className="text-sm text-slate-300 mt-1 max-w-xl">
@@ -107,7 +107,7 @@ export const Dashboard = () => {
               variant="primary"
               size="sm"
               leftIcon={Plus}
-              className="bg-indigo-500 hover:bg-indigo-600 shadow-md shadow-indigo-500/30"
+              className="bg-[#ed1d24] hover:bg-[#d32f2f] shadow-md shadow-[#ed1d24]/20 font-bold"
             >
               Add Product
             </Button>
@@ -116,7 +116,7 @@ export const Dashboard = () => {
             <Button
               variant="dark"
               size="sm"
-              className="border border-slate-700 bg-slate-800/80 hover:bg-slate-800"
+              className="border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-semibold"
             >
               Add Category
             </Button>
@@ -125,21 +125,21 @@ export const Dashboard = () => {
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {/* Products Card */}
         <Link
           to="/admin/products"
-          className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 hover:shadow-md transition-all group"
+          className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-[#ed1d24]/50 hover:shadow-sm transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Total Products
             </span>
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-red-50 text-[#ed1d24] flex items-center justify-center group-hover:bg-[#ed1d24] group-hover:text-white transition-colors">
               <Package className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-extrabold text-slate-900 font-heading mt-3">
+          <p className="text-3xl font-black text-slate-900 font-heading mt-3">
             {stats.productsCount}
           </p>
           <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
@@ -151,17 +151,17 @@ export const Dashboard = () => {
         {/* Categories Card */}
         <Link
           to="/admin/categories"
-          className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 hover:shadow-md transition-all group"
+          className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-[#ed1d24]/50 hover:shadow-sm transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Active Categories
             </span>
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-red-50 text-[#ed1d24] flex items-center justify-center group-hover:bg-[#ed1d24] group-hover:text-white transition-colors">
               <Layers className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-extrabold text-slate-900 font-heading mt-3">
+          <p className="text-3xl font-black text-slate-900 font-heading mt-3">
             {stats.categoriesCount}
           </p>
           <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
@@ -173,17 +173,17 @@ export const Dashboard = () => {
         {/* Orders Card */}
         <Link
           to="/admin/orders"
-          className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 hover:shadow-md transition-all group"
+          className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 shadow-xs hover:border-[#ed1d24]/50 hover:shadow-sm transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Total Customer Orders
             </span>
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-red-50 text-[#ed1d24] flex items-center justify-center group-hover:bg-[#ed1d24] group-hover:text-white transition-colors">
               <ShoppingBag className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-extrabold text-slate-900 font-heading mt-3">
+          <p className="text-3xl font-black text-slate-900 font-heading mt-3">
             {stats.ordersCount}
           </p>
           <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
@@ -196,12 +196,12 @@ export const Dashboard = () => {
       {/* Recent Orders Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900 font-heading">
+          <h2 className="text-base font-bold text-slate-900 font-heading">
             Recent Customer Orders
           </h2>
           <Link
             to="/admin/orders"
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 hover:underline"
+            className="text-xs font-semibold text-[#ed1d24] hover:text-[#d32f2f] flex items-center gap-1"
           >
             View All Orders
             <ArrowRight className="w-3.5 h-3.5" />
