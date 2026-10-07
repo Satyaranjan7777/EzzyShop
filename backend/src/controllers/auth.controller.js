@@ -24,7 +24,7 @@ const generateToken = (userId, role) => {
  * @access  Public
  */
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   const normalizedEmail = email.toLowerCase().trim();
 
@@ -38,12 +38,12 @@ export const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Create user
+  // Create user - always assign 'user' role on public registration
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
     password: hashedPassword,
-    role: role || "user",
+    role: "user",
   });
 
   const token = generateToken(user._id, user.role);
@@ -74,8 +74,8 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const normalizedEmail = email.toLowerCase().trim();
 
-  // Find user
-  const user = await User.findOne({ email: normalizedEmail });
+  // Find user (explicitly selecting password since it is marked select: false in schema)
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
   if (!user) {
     throw new ApiError(401, "Invalid email or password");
   }

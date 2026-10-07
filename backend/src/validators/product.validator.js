@@ -1,125 +1,168 @@
-const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+import schema from "./schema.js";
+
+/**
+ * Strict schema for Creating a Product
+ */
+const createProductBodySchema = schema
+  .object({
+    title: schema
+      .string()
+      .min(2, "Product title is required and must be at least 2 characters long")
+      .max(150, "Product title cannot exceed 150 characters"),
+    slug: schema.slug().optional(),
+    description: schema
+      .string()
+      .min(5, "Product description is required and must be at least 5 characters long")
+      .max(5000, "Product description cannot exceed 5000 characters"),
+    price: schema
+      .number()
+      .min(0.01, "Price is required and must be a positive number greater than 0")
+      .max(10000000, "Price cannot exceed 10,000,000"),
+    discountPrice: schema
+      .number()
+      .min(0, "Discount price must be a valid non-negative number")
+      .max(10000000, "Discount price cannot exceed 10,000,000")
+      .nullable()
+      .optional(),
+    category: schema.objectId("A valid 24-character category ID is required"),
+    images: schema
+      .array(schema.url("Each image must be a valid http or https URL"))
+      .min(0)
+      .max(10, "Cannot upload more than 10 images")
+      .optional(),
+    stock: schema
+      .number()
+      .int("Stock must be an integer")
+      .min(0, "Stock is required and must be a non-negative number")
+      .max(1000000, "Stock cannot exceed 1,000,000"),
+    isActive: schema.boolean().optional(),
+  })
+  .strict()
+  .refine((body) => {
+    if (
+      body.discountPrice !== undefined &&
+      body.discountPrice !== null &&
+      body.price !== undefined
+    ) {
+      return body.discountPrice < body.price;
+    }
+    return true;
+  }, "Discount price must be strictly less than the regular price");
 
 export const createProductValidator = (req) => {
-  const {
-    title,
-    description,
-    price,
-    discountPrice,
-    category,
-    images,
-    stock,
-    isActive,
-  } = req.body || {};
   const errors = [];
-
-  if (!title || typeof title !== "string" || title.trim().length < 2) {
-    errors.push("Product title is required and must be at least 2 characters long");
-  }
-
-  if (!description || typeof description !== "string" || description.trim().length < 5) {
-    errors.push("Product description is required and must be at least 5 characters long");
-  }
-
-  const numPrice = Number(price);
-  if (price === undefined || isNaN(numPrice) || numPrice <= 0) {
-    errors.push("Price is required and must be a positive number greater than 0");
-  }
-
-  if (discountPrice !== undefined && discountPrice !== null && discountPrice !== "") {
-    const numDiscount = Number(discountPrice);
-    if (isNaN(numDiscount) || numDiscount < 0) {
-      errors.push("Discount price must be a valid non-negative number");
-    } else if (!isNaN(numPrice) && numDiscount >= numPrice) {
-      errors.push("Discount price must be less than the regular price");
-    }
-  }
-
-  if (!category || !isValidObjectId(category)) {
-    errors.push("A valid category ID is required");
-  }
-
-  if (images !== undefined) {
-    if (!Array.isArray(images)) {
-      errors.push("Images must be an array of image URL strings");
-    } else if (images.some((img) => typeof img !== "string" || img.trim() === "")) {
-      errors.push("Each image in images array must be a valid URL string");
-    }
-  }
-
-  const numStock = Number(stock);
-  if (stock === undefined || isNaN(numStock) || numStock < 0) {
-    errors.push("Stock is required and must be a non-negative number");
-  }
-
-  if (isActive !== undefined && typeof isActive !== "boolean") {
-    errors.push("isActive must be a boolean value");
-  }
-
+  createProductBodySchema.validate(req.body || {}, "body", errors);
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
 };
 
+/**
+ * Strict schema for Updating a Product
+ */
+const updateProductBodySchema = schema
+  .object({
+    title: schema
+      .string()
+      .min(2, "Product title must be at least 2 characters long")
+      .max(150, "Product title cannot exceed 150 characters")
+      .optional(),
+    slug: schema.slug().optional(),
+    description: schema
+      .string()
+      .min(5, "Product description must be at least 5 characters long")
+      .max(5000, "Product description cannot exceed 5000 characters")
+      .optional(),
+    price: schema
+      .number()
+      .min(0.01, "Price must be a positive number greater than 0")
+      .max(10000000, "Price cannot exceed 10,000,000")
+      .optional(),
+    discountPrice: schema
+      .number()
+      .min(0, "Discount price must be a valid non-negative number")
+      .max(10000000, "Discount price cannot exceed 10,000,000")
+      .nullable()
+      .optional(),
+    category: schema.objectId("Invalid category ID format").optional(),
+    images: schema
+      .array(schema.url("Each image must be a valid http or https URL"))
+      .min(0)
+      .max(10, "Cannot exceed 10 images")
+      .optional(),
+    stock: schema
+      .number()
+      .int("Stock must be an integer")
+      .min(0, "Stock must be a non-negative number")
+      .max(1000000, "Stock cannot exceed 1,000,000")
+      .optional(),
+    isActive: schema.boolean().optional(),
+  })
+  .minKeys(1, "At least one field must be provided for product update")
+  .strict()
+  .refine((body) => {
+    if (
+      body.discountPrice !== undefined &&
+      body.discountPrice !== null &&
+      body.price !== undefined
+    ) {
+      return body.discountPrice < body.price;
+    }
+    return true;
+  }, "Discount price must be strictly less than the regular price");
+
 export const updateProductValidator = (req) => {
-  const {
-    title,
-    description,
-    price,
-    discountPrice,
-    category,
-    images,
-    stock,
-    isActive,
-  } = req.body || {};
   const errors = [];
-
-  if (title !== undefined && (typeof title !== "string" || title.trim().length < 2)) {
-    errors.push("Product title must be at least 2 characters long");
-  }
-
-  if (description !== undefined && (typeof description !== "string" || description.trim().length < 5)) {
-    errors.push("Product description must be at least 5 characters long");
-  }
-
-  if (price !== undefined) {
-    const numPrice = Number(price);
-    if (isNaN(numPrice) || numPrice <= 0) {
-      errors.push("Price must be a positive number greater than 0");
-    }
-  }
-
-  if (discountPrice !== undefined && discountPrice !== null && discountPrice !== "") {
-    const numDiscount = Number(discountPrice);
-    if (isNaN(numDiscount) || numDiscount < 0) {
-      errors.push("Discount price must be a valid non-negative number");
-    }
-  }
-
-  if (category !== undefined && !isValidObjectId(category)) {
-    errors.push("Invalid category ID format");
-  }
-
-  if (images !== undefined && !Array.isArray(images)) {
-    errors.push("Images must be an array of image URL strings");
-  }
-
-  if (stock !== undefined) {
-    const numStock = Number(stock);
-    if (isNaN(numStock) || numStock < 0) {
-      errors.push("Stock must be a non-negative number");
-    }
-  }
-
-  if (isActive !== undefined && typeof isActive !== "boolean") {
-    errors.push("isActive must be a boolean value");
-  }
-
+  updateProductBodySchema.validate(req.body || {}, "body", errors);
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
+};
+
+/**
+ * Strict schema for Product Query Filters
+ */
+const getProductsQuerySchema = schema
+  .object({
+    page: schema.number().allowNumericString().int().min(1).max(10000).optional(),
+    limit: schema.number().allowNumericString().int().min(1).max(100).optional(),
+    search: schema.string().min(1).max(100).optional(),
+    category: schema.string().min(1).max(60).optional(),
+    sort: schema
+      .enum([
+        "price",
+        "price_asc",
+        "-price",
+        "price_desc",
+        "title",
+        "title_asc",
+        "-title",
+        "title_desc",
+        "newest",
+        "-createdAt",
+        "oldest",
+        "createdAt",
+      ])
+      .optional(),
+    minPrice: schema.number().allowNumericString().min(0).optional(),
+    maxPrice: schema.number().allowNumericString().min(0).optional(),
+    inStock: schema.enum(["true", "false"]).optional(),
+  })
+  .strict();
+
+export const getProductsQueryValidator = (req) => {
+  const errors = [];
+  getProductsQuerySchema.validate(req.query || {}, "query", errors);
+  if (errors.length > 0) {
+    return { error: errors[0], errors };
+  }
+  return { error: null };
+};
+
+export default {
+  createProductValidator,
+  updateProductValidator,
+  getProductsQueryValidator,
 };

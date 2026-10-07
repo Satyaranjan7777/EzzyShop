@@ -6,6 +6,14 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 /**
+ * Escape special regular expression characters to prevent ReDoS and Regex Injection
+ */
+export const escapeRegex = (text) => {
+  if (typeof text !== "string") return "";
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+/**
  * Generate slug helper
  */
 const generateSlug = (text) => {
@@ -35,9 +43,10 @@ export const getProducts = asyncHandler(async (req, res) => {
 
   const query = { isActive: true };
 
-  // Search filter
+  // Search filter (safely escaped to prevent ReDoS / injection)
   if (search && search.trim() !== "") {
-    const searchRegex = new RegExp(search.trim(), "i");
+    const safeSearch = escapeRegex(search.trim());
+    const searchRegex = new RegExp(safeSearch, "i");
     query.$or = [{ title: searchRegex }, { description: searchRegex }];
   }
 

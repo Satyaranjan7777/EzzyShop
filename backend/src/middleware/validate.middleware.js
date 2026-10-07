@@ -36,11 +36,28 @@ export const validate = (schema) => {
         return next();
       }
 
+      // If schema has a validate method (our strict Schema / RequestSchema instance)
+      if (schema && typeof schema.validate === "function") {
+        const result = schema.validate(req);
+        if (result && result.error) {
+          return next(
+            new ApiError(400, result.error, result.errors || [result.error])
+          );
+        }
+        return next();
+      }
+
       // If schema is a direct validation function
       if (typeof schema === "function") {
         const validationResult = schema(req);
         if (validationResult && validationResult.error) {
-          return next(new ApiError(400, validationResult.error, validationResult.errors || []));
+          return next(
+            new ApiError(
+              400,
+              validationResult.error,
+              validationResult.errors || [validationResult.error]
+            )
+          );
         }
         return next();
       }

@@ -5,6 +5,14 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 /**
+ * Escape special regular expression characters
+ */
+const escapeRegex = (text) => {
+  if (typeof text !== "string") return "";
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+/**
  * Generate slug helper
  */
 const generateSlug = (text) => {
@@ -61,11 +69,12 @@ export const createCategory = asyncHandler(async (req, res) => {
   const { name, slug, isActive } = req.body;
 
   const normalizedName = name.trim();
+  const safeName = escapeRegex(normalizedName);
   const generatedSlug = slug ? generateSlug(slug) : generateSlug(normalizedName);
 
-  // Check duplicate
+  // Check duplicate with escaped regex
   const existingCategory = await Category.findOne({
-    $or: [{ name: { $regex: new RegExp(`^${normalizedName}$`, "i") } }, { slug: generatedSlug }],
+    $or: [{ name: { $regex: new RegExp(`^${safeName}$`, "i") } }, { slug: generatedSlug }],
   });
 
   if (existingCategory) {
@@ -100,8 +109,9 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
   if (name && name.trim() !== category.name) {
     const normalizedName = name.trim();
+    const safeName = escapeRegex(normalizedName);
     const existing = await Category.findOne({
-      name: { $regex: new RegExp(`^${normalizedName}$`, "i") },
+      name: { $regex: new RegExp(`^${safeName}$`, "i") },
       _id: { $ne: category._id },
     });
 

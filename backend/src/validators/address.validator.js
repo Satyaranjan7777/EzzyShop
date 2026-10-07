@@ -1,105 +1,101 @@
+import schema from "./schema.js";
+
+/**
+ * Strict schema for Creating an Address
+ */
+const createAddressBodySchema = schema
+  .object({
+    fullName: schema
+      .string()
+      .min(2, "Full name is required and must be at least 2 characters long")
+      .max(60, "Full name cannot exceed 60 characters"),
+    phone: schema.phone(
+      "A valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9) is required"
+    ),
+    addressLine: schema
+      .string()
+      .min(3, "Address line is required and must be at least 3 characters long")
+      .max(200, "Address line cannot exceed 200 characters"),
+    city: schema
+      .string()
+      .min(2, "City is required and must be at least 2 characters long")
+      .max(50, "City cannot exceed 50 characters"),
+    state: schema
+      .string()
+      .min(2, "State is required and must be at least 2 characters long")
+      .max(50, "State cannot exceed 50 characters"),
+    pincode: schema.pincode("A valid 6-digit Indian PIN code is required"),
+    country: schema
+      .string()
+      .min(2, "Country must be at least 2 characters long")
+      .max(50, "Country cannot exceed 50 characters")
+      .optional(),
+    isDefault: schema.boolean().optional(),
+  })
+  .strict();
+
 export const createAddressValidator = (req) => {
-  const {
-    fullName,
-    phone,
-    addressLine,
-    city,
-    state,
-    pincode,
-    country,
-    isDefault,
-  } = req.body || {};
   const errors = [];
-
-  if (!fullName || typeof fullName !== "string" || fullName.trim().length < 2) {
-    errors.push("Full name is required and must be at least 2 characters long");
-  }
-
-  const phoneRegex = /^(?:(?:\+|0{0,2})91[\s\-]?)?(?:0[\s\-]?)?[6-9](?:[\s\-]?\d){9}$/;
-  if (!phone || typeof phone !== "string" || !phoneRegex.test(phone.trim())) {
-    errors.push("A valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9) is required");
-  }
-
-  if (!addressLine || typeof addressLine !== "string" || addressLine.trim().length < 3) {
-    errors.push("Address line is required and must be at least 3 characters long");
-  }
-
-  if (!city || typeof city !== "string" || city.trim().length < 2) {
-    errors.push("City is required");
-  }
-
-  if (!state || typeof state !== "string" || state.trim().length < 2) {
-    errors.push("State is required");
-  }
-
-  if (!pincode || typeof pincode !== "string" || pincode.trim().length < 3) {
-    errors.push("Pincode is required");
-  }
-
-  if (country !== undefined && (typeof country !== "string" || country.trim().length === 0)) {
-    errors.push("Country must be a valid string");
-  }
-
-  if (isDefault !== undefined && typeof isDefault !== "boolean") {
-    errors.push("isDefault must be a boolean value");
-  }
-
+  createAddressBodySchema.validate(req.body || {}, "body", errors);
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
 };
 
+/**
+ * Strict schema for Updating an Address
+ */
+const updateAddressBodySchema = schema
+  .object({
+    fullName: schema
+      .string()
+      .min(2, "Full name must be at least 2 characters long")
+      .max(60, "Full name cannot exceed 60 characters")
+      .optional(),
+    phone: schema
+      .phone(
+        "Please provide a valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9)"
+      )
+      .optional(),
+    addressLine: schema
+      .string()
+      .min(3, "Address line must be at least 3 characters long")
+      .max(200, "Address line cannot exceed 200 characters")
+      .optional(),
+    city: schema
+      .string()
+      .min(2, "City must be at least 2 characters long")
+      .max(50, "City cannot exceed 50 characters")
+      .optional(),
+    state: schema
+      .string()
+      .min(2, "State must be at least 2 characters long")
+      .max(50, "State cannot exceed 50 characters")
+      .optional(),
+    pincode: schema
+      .pincode("Please provide a valid 6-digit Indian PIN code")
+      .optional(),
+    country: schema
+      .string()
+      .min(2, "Country must be at least 2 characters long")
+      .max(50, "Country cannot exceed 50 characters")
+      .optional(),
+    isDefault: schema.boolean().optional(),
+  })
+  .minKeys(1, "At least one field must be provided for address update")
+  .strict();
+
 export const updateAddressValidator = (req) => {
-  const {
-    fullName,
-    phone,
-    addressLine,
-    city,
-    state,
-    pincode,
-    country,
-    isDefault,
-  } = req.body || {};
   const errors = [];
-
-  if (fullName !== undefined && (typeof fullName !== "string" || fullName.trim().length < 2)) {
-    errors.push("Full name must be at least 2 characters long");
-  }
-
-  const phoneRegex = /^(?:(?:\+|0{0,2})91[\s\-]?)?(?:0[\s\-]?)?[6-9](?:[\s\-]?\d){9}$/;
-  if (phone !== undefined && (typeof phone !== "string" || !phoneRegex.test(phone.trim()))) {
-    errors.push("Please provide a valid 10-digit Indian mobile number (+91 or starting with 6, 7, 8, 9)");
-  }
-
-  if (addressLine !== undefined && (typeof addressLine !== "string" || addressLine.trim().length < 3)) {
-    errors.push("Address line must be at least 3 characters long");
-  }
-
-  if (city !== undefined && (typeof city !== "string" || city.trim().length < 2)) {
-    errors.push("City must be a valid string");
-  }
-
-  if (state !== undefined && (typeof state !== "string" || state.trim().length < 2)) {
-    errors.push("State must be a valid string");
-  }
-
-  if (pincode !== undefined && (typeof pincode !== "string" || pincode.trim().length < 3)) {
-    errors.push("Pincode must be a valid string");
-  }
-
-  if (country !== undefined && (typeof country !== "string" || country.trim().length === 0)) {
-    errors.push("Country must be a valid string");
-  }
-
-  if (isDefault !== undefined && typeof isDefault !== "boolean") {
-    errors.push("isDefault must be a boolean value");
-  }
-
+  updateAddressBodySchema.validate(req.body || {}, "body", errors);
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
+};
+
+export default {
+  createAddressValidator,
+  updateAddressValidator,
 };

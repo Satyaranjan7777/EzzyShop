@@ -1,6 +1,7 @@
 import request from "supertest";
 import app from "../src/app.js";
 import { connectTestDB, closeTestDB } from "./setup.js";
+import User from "../src/models/User.js";
 
 describe("Order Endpoints (/api/v1/orders)", () => {
   beforeAll(async () => {
@@ -21,13 +22,14 @@ describe("Order Endpoints (/api/v1/orders)", () => {
 
   beforeAll(async () => {
     // Register Admin
+    const adminEmail = `admin_order_${timestamp}@example.com`;
     const adminRes = await request(app).post("/api/v1/auth/register").send({
       name: "Admin Order Test",
-      email: `admin_order_${timestamp}@example.com`,
+      email: adminEmail,
       password: "Password123!",
-      role: "admin",
     });
     adminToken = adminRes.body.data?.token;
+    await User.updateOne({ email: adminEmail }, { role: "admin" });
 
     // Register User A
     const userARes = await request(app).post("/api/v1/auth/register").send({

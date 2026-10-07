@@ -1,44 +1,63 @@
-const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+import schema from "./schema.js";
+
+/**
+ * Strict schema for Adding Items to Cart
+ */
+const addToCartBodySchema = schema
+  .object({
+    productId: schema.objectId("A valid 24-character product ID is required"),
+    quantity: schema
+      .number()
+      .int("Quantity must be an integer")
+      .min(1, "Quantity must be a positive integer of at least 1")
+      .max(100, "Quantity cannot exceed 100 items per product")
+      .optional(),
+  })
+  .strict();
 
 export const addToCartValidator = (req) => {
-  const { productId, quantity } = req.body || {};
   const errors = [];
-
-  if (!productId || !isValidObjectId(productId)) {
-    errors.push("A valid product ID is required");
-  }
-
-  if (quantity !== undefined) {
-    const numQty = Number(quantity);
-    if (!Number.isInteger(numQty) || numQty < 1) {
-      errors.push("Quantity must be a positive integer of at least 1");
-    }
-  }
-
+  addToCartBodySchema.validate(req.body || {}, "body", errors);
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
 };
 
+/**
+ * Strict schema for Updating Cart Item Quantity
+ */
+const updateCartItemBodySchema = schema
+  .object({
+    quantity: schema
+      .number()
+      .int("Quantity must be an integer")
+      .min(1, "Quantity is required and must be a positive integer of at least 1")
+      .max(100, "Quantity cannot exceed 100 items per product"),
+  })
+  .strict();
+
 export const updateCartItemValidator = (req) => {
-  const { quantity } = req.body || {};
-  const { productId } = req.params || {};
   const errors = [];
 
-  if (productId && !isValidObjectId(productId)) {
-    errors.push("Invalid product ID in URL parameters");
+  // Check productId parameter in URL if present
+  if (req.params && req.params.productId) {
+    schema.objectId("Invalid product ID in URL parameters").validate(
+      req.params.productId,
+      "params.productId",
+      errors
+    );
   }
 
-  const numQty = Number(quantity);
-  if (quantity === undefined || !Number.isInteger(numQty) || numQty < 1) {
-    errors.push("Quantity is required and must be a positive integer of at least 1");
-  }
+  updateCartItemBodySchema.validate(req.body || {}, "body", errors);
 
   if (errors.length > 0) {
     return { error: errors[0], errors };
   }
-
   return { error: null };
+};
+
+export default {
+  addToCartValidator,
+  updateCartItemValidator,
 };

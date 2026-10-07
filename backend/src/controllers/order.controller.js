@@ -114,39 +114,100 @@ export const createOrder = asyncHandler(async (req, res) => {
   const shippingFee = subtotal >= 1000 ? 0 : 50;
   const total = subtotal + shippingFee;
 
-  // 5. Create Order
-  const order = await Order.create({
-    user: req.user._id,
-    items: orderItems,
-    shippingAddress: finalShippingAddress,
-    pricing: {
-      subtotal,
-      shippingFee,
-      total,
-    },
-    payment: {
-      method: paymentMethod || "COD",
-      status: "pending",
-    },
-    orderStatus: "pending",
-  });
+  // 5. Concurrency-Safe Stock Reservation & Order Creation
+  let session = null;
+  let useTransaction = false;
 
-  // 6. Reduce stock for each purchased product
-  for (const item of orderItems) {
-    await Product.findByIdAndUpdate(item.product, {
-      $inc: { stock: -item.quantity },
-    });
+  try {
+    session = await mongoose.startSession();
+    session.startTransaction();
+    useTransaction = true;
+  } catch {
+    session = null;
+    useTransaction = false;
   }
 
-  // 7. Clear user's cart
-  cart.items = [];
-  await cart.save();
+  const decrementedItems = [];
 
-  return new ApiResponse(
-    201,
-    "Order placed successfully",
-    order
-  ).send(res);
+  try {
+    const sessionOpts = useTransaction ? { session } : {};
+
+    // Atomically reserve inventory for each item using conditional updates
+    for (const item of orderItems) {
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: item.product,
+          stock: { $gte: item.quantity },
+          isActive: true,
+        },
+        { $inc: { stock: -item.quantity } },
+        { returnDocument: "after", ...sessionOpts }
+      );
+
+      if (!updatedProduct) {
+        throw new ApiError(
+          400,
+          `Insufficient stock for "${item.title}". It may have just sold out.`
+        );
+      }
+
+      decrementedItems.push(item);
+    }
+
+    // Create Order
+    const orderDocs = await Order.create(
+      [
+        {
+          user: req.user._id,
+          items: orderItems,
+          shippingAddress: finalShippingAddress,
+          pricing: {
+            subtotal,
+            shippingFee,
+            total,
+          },
+          payment: {
+            method: paymentMethod || "COD",
+            status: "pending",
+          },
+          orderStatus: "pending",
+        },
+      ],
+      sessionOpts
+    );
+
+    const order = orderDocs[0];
+
+    // Clear user's cart
+    cart.items = [];
+    await cart.save(sessionOpts);
+
+    if (useTransaction && session) {
+      await session.commitTransaction();
+    }
+
+    return new ApiResponse(
+      201,
+      "Order placed successfully",
+      order
+    ).send(res);
+  } catch (error) {
+    if (useTransaction && session) {
+      await session.abortTransaction();
+    } else {
+      // Standalone MongoDB without transactions: rollback decremented inventory
+      for (const item of decrementedItems) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: item.quantity },
+        });
+      }
+    }
+    throw error;
+  } finally {
+    if (session) {
+      session.endSession();
+    }
+  }
 });
 
 /**
