@@ -95,10 +95,10 @@ export const MasterAdminActivity = () => {
 
   // Badge color mapping for actions
   const getActionBadgeColor = (action) => {
-    if (action.includes("CREATE")) return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-    if (action.includes("UPDATE")) return "bg-sky-500/10 text-sky-400 border-sky-500/20";
-    if (action.includes("DELETE") || action.includes("CANCEL")) return "bg-rose-500/10 text-rose-400 border-rose-500/20";
-    if (action.includes("LOGIN")) return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+    if (action.includes("CREATE")) return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+    if (action.includes("UPDATE")) return "bg-indigo-500/20 text-indigo-400 border-indigo-500/30";
+    if (action.includes("DELETE") || action.includes("CANCEL")) return "bg-rose-500/20 text-rose-400 border-rose-500/30";
+    if (action.includes("LOGIN")) return "bg-amber-500/20 text-amber-400 border-amber-500/30";
     return "bg-slate-800 text-slate-300 border-slate-700";
   };
 
@@ -137,7 +137,7 @@ export const MasterAdminActivity = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0b1329] text-slate-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
         <Loader text="Loading administrator activity logs..." />
       </div>
     );
@@ -145,8 +145,8 @@ export const MasterAdminActivity = () => {
 
   if (errorMessage && !admin) {
     return (
-      <div className="min-h-screen bg-[#0b1329] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans flex items-center justify-center">
-        <div className="max-w-md w-full bg-[#0f172a] border border-slate-800 rounded-2xl p-8 text-center space-y-5 shadow-2xl">
+      <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans flex items-center justify-center">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center space-y-5 shadow-2xl">
           <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 mx-auto flex items-center justify-center">
             <AlertTriangle className="w-8 h-8" />
           </div>
@@ -171,21 +171,21 @@ export const MasterAdminActivity = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b1329] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Top Header & Navigation Bar */}
-        <header className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <header className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link
               to="/master/admins"
-              className="w-12 h-12 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center justify-center transition-all group"
+              className="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center justify-center transition-all group"
               title="Return to Master Admins Console"
             >
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   Master Console
                 </span>
                 <span className="text-xs text-slate-400">Admin Activity Dossier</span>
@@ -202,14 +202,14 @@ export const MasterAdminActivity = () => {
           <div className="flex items-center gap-3 w-full md:w-auto">
             <Link
               to="/master/admins"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
             >
-              <ShieldCheck className="w-4 h-4 text-slate-400" />
+              <ShieldCheck className="w-4 h-4 text-indigo-400" />
               All Admins
             </Link>
             <Link
               to="/admin/products"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
             >
               <Boxes className="w-4 h-4 text-amber-400" />
               Catalog (Read-Only)
@@ -218,7 +218,7 @@ export const MasterAdminActivity = () => {
               variant="outline"
               size="sm"
               onClick={logout}
-              className="border-rose-900/40 text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 text-xs"
+              className="border-rose-900/50 text-rose-400 hover:bg-rose-950/50 hover:text-rose-300 text-xs"
             >
               <LogOut className="w-4 h-4 mr-1.5" />
               Sign Out
@@ -228,11 +228,13 @@ export const MasterAdminActivity = () => {
 
         {/* Admin Profile Overview Banner */}
         {admin && (
-          <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+          <div className="bg-slate-900/90 border border-indigo-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               {/* Profile Details */}
               <div className="flex items-start sm:items-center gap-5">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center font-black text-3xl sm:text-4xl text-amber-400 shadow-md shrink-0">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center font-black text-3xl sm:text-4xl text-white shadow-xl shadow-indigo-600/30 border border-white/20 shrink-0">
                   {admin.name?.charAt(0).toUpperCase() || "A"}
                 </div>
                 <div className="space-y-1.5">
@@ -240,7 +242,7 @@ export const MasterAdminActivity = () => {
                     <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                       {admin.name}
                     </h2>
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                       Staff Administrator
                     </span>
                     {admin.isActive ? (
@@ -258,7 +260,7 @@ export const MasterAdminActivity = () => {
 
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate-400 pt-1">
                     <span className="flex items-center gap-1.5 text-slate-300">
-                      <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <Mail className="w-3.5 h-3.5 text-indigo-400" />
                       {admin.email}
                     </span>
                     <span className="flex items-center gap-1.5">
@@ -320,7 +322,7 @@ export const MasterAdminActivity = () => {
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Boxes className="w-4 h-4 text-slate-400" />
+              <Boxes className="w-4 h-4 text-indigo-400" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
                 Operational Management Breakdown
               </h3>
@@ -344,12 +346,12 @@ export const MasterAdminActivity = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* KPI 1: Catalog Products */}
-            <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-colors">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900 to-slate-900 border border-indigo-500/20 shadow-xl relative overflow-hidden group hover:border-indigo-500/40 transition-colors">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm">
                   <Package className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
                   Catalog
                 </span>
               </div>
@@ -370,12 +372,12 @@ export const MasterAdminActivity = () => {
             </div>
 
             {/* KPI 2: Categories Managed */}
-            <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-colors">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/20 shadow-xl relative overflow-hidden group hover:border-purple-500/40 transition-colors">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shadow-sm">
                   <FolderTree className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-purple-500/10 text-purple-300 border border-purple-500/20">
                   Taxonomy
                 </span>
               </div>
@@ -396,12 +398,12 @@ export const MasterAdminActivity = () => {
             </div>
 
             {/* KPI 3: Orders Processed */}
-            <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-colors">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/20 shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition-colors">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-sm">
                   <ShoppingBag className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
                   Fulfillment
                 </span>
               </div>
@@ -412,7 +414,7 @@ export const MasterAdminActivity = () => {
                 <div className="text-xs text-slate-400 font-medium mt-0.5">Order Operations</div>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                <span className="text-slate-300 font-medium">
+                <span className="text-indigo-400 font-medium">
                   {stats?.orders?.statusUpdated ?? 0} Status Updates
                 </span>
                 <span className="text-rose-400">
@@ -422,12 +424,12 @@ export const MasterAdminActivity = () => {
             </div>
 
             {/* KPI 4: Security & Audit */}
-            <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-colors">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-900 border border-amber-500/20 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-colors">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-sm">
                   <Activity className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-500/10 text-amber-300 border border-amber-500/20">
                   Security
                 </span>
               </div>
@@ -448,11 +450,11 @@ export const MasterAdminActivity = () => {
         </section>
 
         {/* Activity Stream Section */}
-        <section className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+        <section className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
           {/* Header & Search */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
             <div className="flex items-center gap-2.5">
-              <History className="w-5 h-5 text-slate-400" />
+              <History className="w-5 h-5 text-indigo-400" />
               <div>
                 <h3 className="text-lg font-bold text-white">
                   Activity Audit Stream ({filteredActivities.length})
@@ -471,7 +473,7 @@ export const MasterAdminActivity = () => {
                 placeholder="Search by action, item title, details..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#ed1d24]/20 focus:border-[#ed1d24]"
+                className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
               {searchQuery && (
                 <button
@@ -498,8 +500,8 @@ export const MasterAdminActivity = () => {
                 onClick={() => setFilterTab(tab.id)}
                 className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
                   filterTab === tab.id
-                    ? "bg-[#ed1d24] text-white font-semibold shadow-md shadow-[#ed1d24]/20 border border-[#ed1d24]"
-                    : "bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700/80"
+                    ? "bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-600/30"
+                    : "bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800"
                 }`}
               >
                 <span>{tab.label}</span>
@@ -519,7 +521,7 @@ export const MasterAdminActivity = () => {
           {/* Activity Stream List */}
           <div className="space-y-3">
             {filteredActivities.length === 0 ? (
-              <div className="py-16 text-center space-y-3 bg-slate-800/20 border border-slate-800/60 rounded-xl">
+              <div className="py-16 text-center space-y-3 bg-slate-800/20 border border-slate-800/60 rounded-2xl">
                 <History className="w-10 h-10 text-slate-600 mx-auto" />
                 <h4 className="text-sm font-bold text-slate-300">No Activity Logs Found</h4>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
@@ -542,7 +544,7 @@ export const MasterAdminActivity = () => {
               filteredActivities.map((act) => (
                 <div
                   key={act._id}
-                  className="p-4 sm:p-5 rounded-xl bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs group"
+                  className="p-4 sm:p-5 rounded-2xl bg-slate-800/40 hover:bg-slate-800/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs group"
                 >
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -553,7 +555,7 @@ export const MasterAdminActivity = () => {
                       >
                         {act.action?.replace(/_/g, " ")}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-700/50 text-slate-300 border border-slate-700">
                         {act.entityType}
                       </span>
                       <span className="font-bold text-white text-sm sm:text-base">
@@ -567,12 +569,12 @@ export const MasterAdminActivity = () => {
                         {Object.entries(act.details).map(([key, val]) => (
                           <span
                             key={key}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700/60 text-[11px] text-slate-300 font-mono"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/60 text-[11px] text-slate-300 font-mono"
                           >
                             <span className="text-slate-400 capitalize">
                               {key.replace(/([A-Z])/g, " $1")}:
                             </span>
-                            <span className="text-slate-200 font-semibold">
+                            <span className="text-indigo-300 font-semibold">
                               {typeof val === "object" ? JSON.stringify(val) : String(val)}
                             </span>
                           </span>
@@ -617,7 +619,7 @@ export const MasterAdminActivity = () => {
             </span>
             <Link
               to="/master/admins"
-              className="inline-flex items-center gap-1 text-[#ed1d24] hover:text-[#d32f2f] font-medium transition-colors"
+              className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Administrator List

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, KeyRound } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
+import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 
 const masterLoginSchema = z.object({
@@ -55,30 +56,28 @@ export const MasterLogin = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[#0b1329] text-white font-sans">
-      <div className="max-w-md w-full space-y-7 bg-[#0f172a] p-8 sm:p-10 rounded-2xl border border-slate-800 shadow-2xl">
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white">
+      <div className="max-w-md w-full space-y-8 bg-slate-900/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-indigo-500/30 shadow-2xl shadow-indigo-950/80">
         {/* Master Badge Header */}
-        <div className="text-center space-y-2.5">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 mb-1 border border-amber-400">
-            <ShieldCheck className="w-7 h-7" />
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-indigo-600 text-white shadow-lg shadow-indigo-600/40 mb-1 border border-white/20">
+            <ShieldCheck className="w-8 h-8" />
           </div>
-          <div>
-            <span className="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">
-              Master Governance Console
-            </span>
+          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            Master Console Gateway
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
-            Master Access Login
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-tight">
+            Master Control Login
           </h2>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
-            Authorized master credentials only. Master accounts hold platform governance and administrator auditing privileges.
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            Authorized master credentials only. Master accounts have exclusive privileges to create, configure, and manage administrators.
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
               Master Email Address
             </label>
             <div className="relative">
@@ -86,9 +85,9 @@ export const MasterLogin = () => {
               <input
                 type="email"
                 placeholder="satyaranjan@gmail.com"
-                className={`w-full bg-slate-900 text-white border ${
-                  errors.email ? "border-rose-500 ring-rose-500/30" : "border-slate-700 focus:border-[#ed1d24]"
-                } rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed1d24]/20 transition-all placeholder:text-slate-500`}
+                className={`w-full bg-slate-800/80 text-white border ${
+                  errors.email ? "border-rose-500 ring-rose-500/30" : "border-slate-700 focus:border-indigo-400"
+                } rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all placeholder:text-slate-500`}
                 {...register("email")}
               />
             </div>
@@ -98,7 +97,7 @@ export const MasterLogin = () => {
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
               Master Password
             </label>
             <div className="relative">
@@ -106,9 +105,9 @@ export const MasterLogin = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••••••"
-                className={`w-full bg-slate-900 text-white border ${
-                  errors.password ? "border-rose-500 ring-rose-500/30" : "border-slate-700 focus:border-[#ed1d24]"
-                } rounded-xl pl-10 pr-11 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ed1d24]/20 transition-all placeholder:text-slate-500`}
+                className={`w-full bg-slate-800/80 text-white border ${
+                  errors.password ? "border-rose-500 ring-rose-500/30" : "border-slate-700 focus:border-indigo-400"
+                } rounded-xl pl-10 pr-11 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all placeholder:text-slate-500`}
                 {...register("password")}
               />
               <button
@@ -130,7 +129,7 @@ export const MasterLogin = () => {
             size="lg"
             isLoading={isSubmitting}
             rightIcon={ArrowRight}
-            className="w-full mt-4 bg-[#ed1d24] hover:bg-[#d32f2f] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[#ed1d24]/25 border-0"
+            className="w-full mt-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-600 hover:from-indigo-500 hover:to-amber-500 shadow-lg shadow-indigo-600/30 border-0"
           >
             Authenticate as Master
           </Button>
@@ -140,7 +139,7 @@ export const MasterLogin = () => {
             <button
               type="button"
               onClick={handleFillDemo}
-              className="text-xs text-amber-400 hover:text-amber-300 underline inline-flex items-center gap-1.5 cursor-pointer font-medium"
+              className="text-xs text-amber-400 hover:text-amber-300 underline inline-flex items-center gap-1"
             >
               <KeyRound className="w-3.5 h-3.5" />
               Autofill Seed Master Credentials

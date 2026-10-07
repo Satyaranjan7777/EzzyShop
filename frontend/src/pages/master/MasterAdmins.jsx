@@ -246,11 +246,11 @@ export const MasterAdmins = () => {
   };
 
   const getActionBadgeColor = (action) => {
-    if (action.includes("CREATE")) return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
-    if (action.includes("UPDATE")) return "bg-sky-500/15 text-sky-400 border-sky-500/30";
-    if (action.includes("DELETE") || action.includes("CANCEL")) return "bg-rose-500/15 text-rose-400 border-rose-500/30";
-    if (action.includes("LOGIN")) return "bg-amber-500/15 text-amber-400 border-amber-500/30";
-    return "bg-slate-800 text-slate-300 border-slate-700";
+    if (action.includes("CREATE")) return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+    if (action.includes("UPDATE")) return "bg-indigo-500/20 text-indigo-400 border-indigo-500/30";
+    if (action.includes("DELETE") || action.includes("CANCEL")) return "bg-rose-500/20 text-rose-400 border-rose-500/30";
+    if (action.includes("LOGIN")) return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+    return "bg-slate-500/20 text-slate-300 border-slate-500/30";
   };
 
   const filteredSingleAdminActivities = (singleAdminActivities || []).filter((act) => {
@@ -268,26 +268,26 @@ export const MasterAdmins = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#0b1329] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-7">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Master Navigation & Hero Bar */}
-        <header className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <header className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-13 h-13 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-md shadow-amber-500/20 border border-amber-400">
-              <ShieldCheck className="w-7 h-7" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30 text-white border border-white/20">
+              <ShieldCheck className="w-8 h-8" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   Master Console
                 </span>
                 <span className="text-xs text-slate-400">Governance & Audit Oversight</span>
               </div>
-              <h1 className="text-2xl font-black text-white font-heading mt-1">
+              <h1 className="text-2xl font-extrabold text-white mt-1">
                 Platform Master Hub
               </h1>
               <p className="text-xs text-slate-400">
-                Logged in as <strong className="text-amber-400">{user?.email}</strong> (Governance & Audit Trail only)
+                Logged in as <strong className="text-amber-400">{user?.email}</strong> (Separation of duties: Governance & Audit Trail only)
               </p>
             </div>
           </div>
@@ -315,12 +315,12 @@ export const MasterAdmins = () => {
         {/* Executive Overview Stats */}
         {overviewStats && (
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl shadow-2xs">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <div className="bg-slate-900/70 border border-indigo-900/40 p-4 rounded-2xl">
+              <div className="flex items-center gap-2 text-indigo-400 text-xs font-medium uppercase">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Admins</span>
               </div>
-              <div className="text-2xl font-black text-white font-heading mt-1">
+              <div className="text-2xl font-extrabold text-white mt-1">
                 {overviewStats.admins.total}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">
@@ -328,45 +328,45 @@ export const MasterAdmins = () => {
               </p>
             </div>
 
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl shadow-2xs">
-              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+            <div className="bg-slate-900/70 border border-slate-800 p-4 rounded-2xl">
+              <div className="flex items-center gap-2 text-slate-400 text-xs font-medium uppercase">
                 <Users className="w-4 h-4" />
                 <span>Customers</span>
               </div>
-              <div className="text-2xl font-black text-white font-heading mt-1">
+              <div className="text-2xl font-extrabold text-white mt-1">
                 {overviewStats.customers}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">Registered customer base</p>
             </div>
 
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl shadow-2xs">
-              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+            <div className="bg-slate-900/70 border border-slate-800 p-4 rounded-2xl">
+              <div className="flex items-center gap-2 text-slate-400 text-xs font-medium uppercase">
                 <Boxes className="w-4 h-4" />
                 <span>Products</span>
               </div>
-              <div className="text-2xl font-black text-white font-heading mt-1">
+              <div className="text-2xl font-extrabold text-white mt-1">
                 {overviewStats.products}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">Catalog SKU count</p>
             </div>
 
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl shadow-2xs">
-              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+            <div className="bg-slate-900/70 border border-slate-800 p-4 rounded-2xl">
+              <div className="flex items-center gap-2 text-slate-400 text-xs font-medium uppercase">
                 <ShoppingBag className="w-4 h-4" />
                 <span>Orders</span>
               </div>
-              <div className="text-2xl font-black text-white font-heading mt-1">
+              <div className="text-2xl font-extrabold text-white mt-1">
                 {overviewStats.orders}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">Platform total orders</p>
             </div>
 
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl shadow-2xs col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+            <div className="bg-slate-900/70 border border-emerald-900/40 p-4 rounded-2xl col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium uppercase">
                 <Activity className="w-4 h-4" />
                 <span>Paid Revenue</span>
               </div>
-              <div className="text-2xl font-black text-emerald-400 font-heading mt-1">
+              <div className="text-2xl font-extrabold text-emerald-300 mt-1">
                 {formatCurrency(overviewStats.revenue)}
               </div>
               <p className="text-[11px] text-slate-400 mt-0.5">Fulfilled sales</p>
@@ -380,8 +380,8 @@ export const MasterAdmins = () => {
             onClick={() => setActiveTab("admins")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
               activeTab === "admins"
-                ? "bg-[#ed1d24] text-white shadow-md shadow-[#ed1d24]/20 border border-[#ed1d24]"
-                : "bg-[#0f172a] text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                : "bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
             }`}
           >
             <ShieldCheck className="w-4 h-4" />
@@ -391,8 +391,8 @@ export const MasterAdmins = () => {
             onClick={() => setActiveTab("activities")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
               activeTab === "activities"
-                ? "bg-[#ed1d24] text-white shadow-md shadow-[#ed1d24]/20 border border-[#ed1d24]"
-                : "bg-[#0f172a] text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
+                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                : "bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
             }`}
           >
             <Activity className="w-4 h-4" />
@@ -417,11 +417,11 @@ export const MasterAdmins = () => {
                   placeholder="Search admin by name or email..."
                   value={adminSearchQuery}
                   onChange={(e) => setAdminSearchQuery(e.target.value)}
-                  className="w-full bg-[#0f172a] border border-slate-800 text-white rounded-xl pl-10 pr-20 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#ed1d24]/20 focus:border-[#ed1d24]"
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-10 pr-20 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 rounded-lg"
                 >
                   Search
                 </button>
@@ -442,7 +442,7 @@ export const MasterAdmins = () => {
                   variant="primary"
                   size="sm"
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="bg-[#ed1d24] hover:bg-[#d32f2f] text-white shadow-md shadow-[#ed1d24]/20"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30"
                 >
                   <UserPlus className="w-4 h-4 mr-1.5" />
                   Add New Admin
@@ -450,7 +450,7 @@ export const MasterAdmins = () => {
               </div>
             </div>
 
-            <div className="bg-[#0f172a] border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
               {isLoadingAdmins ? (
                 <div className="py-20 flex justify-center">
                   <Loader text="Fetching administrator directory..." />
@@ -482,7 +482,7 @@ export const MasterAdmins = () => {
                         <tr key={admin._id} className="hover:bg-slate-800/40 transition-colors">
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-amber-400 text-xs">
+                              <div className="w-10 h-10 rounded-xl bg-indigo-950 border border-indigo-500/30 flex items-center justify-center font-bold text-indigo-300">
                                 {admin.name.charAt(0).toUpperCase()}
                               </div>
                               <div>
@@ -492,7 +492,7 @@ export const MasterAdmins = () => {
                             </div>
                           </td>
                           <td className="py-4 px-6">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                               <ShieldCheck className="w-3 h-3" />
                               Admin
                             </span>
@@ -520,12 +520,12 @@ export const MasterAdmins = () => {
                           <td className="py-4 px-6 text-right space-x-2">
                             <Link
                               to={`/master/admins/${admin._id}/activity`}
-                              className="px-3 py-1.5 rounded-lg font-medium bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-colors inline-flex items-center gap-1.5"
+                              className="px-3 py-1.5 rounded-lg font-medium bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-indigo-200 border border-slate-700 transition-colors inline-flex items-center gap-1.5"
                               title="Open dedicated activity page in new view"
                             >
-                              <History className="w-3.5 h-3.5 text-slate-400" />
+                              <History className="w-3.5 h-3.5" />
                               <span>View Activity</span>
-                              <ExternalLink className="w-3 h-3 text-slate-400" />
+                              <ExternalLink className="w-3 h-3 text-indigo-400/80" />
                             </Link>
                             <button
                               onClick={() => handleToggleStatus(admin)}
@@ -559,7 +559,7 @@ export const MasterAdmins = () => {
         {activeTab === "activities" && (
           <div className="space-y-4">
             {/* Filter Bar */}
-            <div className="bg-[#0f172a] border border-slate-800 p-4 rounded-xl flex flex-wrap items-center justify-between gap-3">
+            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <Filter className="w-3.5 h-3.5" />
@@ -572,7 +572,7 @@ export const MasterAdmins = () => {
                     setActivityFilter(next);
                     fetchActivities(next);
                   }}
-                  className="bg-slate-900 border border-slate-800 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#ed1d24]"
+                  className="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none"
                 >
                   <option value="">All Entities</option>
                   <option value="Product">Products</option>
@@ -588,7 +588,7 @@ export const MasterAdmins = () => {
                     setActivityFilter(next);
                     fetchActivities(next);
                   }}
-                  className="bg-slate-900 border border-slate-800 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#ed1d24]"
+                  className="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none"
                 >
                   <option value="">All Actions</option>
                   <option value="CREATE_PRODUCT">Create Product</option>
@@ -610,13 +610,13 @@ export const MasterAdmins = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") fetchActivities(activityFilter);
                   }}
-                  className="bg-slate-900 border border-slate-800 text-white rounded-lg px-3 py-1.5 text-xs placeholder:text-slate-500 focus:outline-none focus:border-[#ed1d24]"
+                  className="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs placeholder:text-slate-500 focus:outline-none"
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => fetchActivities(activityFilter)}
-                  className="border-slate-700 text-slate-300 hover:border-[#ed1d24] hover:text-white"
+                  className="border-slate-700 text-slate-300"
                 >
                   Apply
                 </Button>
@@ -624,7 +624,7 @@ export const MasterAdmins = () => {
             </div>
 
             {/* Activities Table */}
-            <div className="bg-[#0f172a] border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
               {isLoadingActivities ? (
                 <div className="py-20 flex justify-center">
                   <Loader text="Loading audit trail..." />
@@ -672,9 +672,9 @@ export const MasterAdmins = () => {
                                 className="group/admin inline-block text-left"
                                 title="Open this administrator's dedicated activity page"
                               >
-                                <div className="font-semibold text-white group-hover/admin:text-[#ed1d24] transition-colors flex items-center gap-1">
+                                <div className="font-semibold text-white group-hover/admin:text-indigo-400 transition-colors flex items-center gap-1">
                                   <span>{act.adminName}</span>
-                                  <ExternalLink className="w-3 h-3 text-slate-500 group-hover/admin:text-[#ed1d24] transition-colors" />
+                                  <ExternalLink className="w-3 h-3 text-slate-500 group-hover/admin:text-indigo-400 transition-colors" />
                                 </div>
                                 <div className="text-[11px] text-slate-400">{act.adminEmail}</div>
                               </Link>

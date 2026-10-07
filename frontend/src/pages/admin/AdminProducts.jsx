@@ -283,7 +283,7 @@ export const AdminProducts = () => {
                             <button
                               type="button"
                               onClick={() => handleOpenEditModal(product)}
-                              className="p-1.5 text-slate-500 hover:text-[#ed1d24] hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                               title="Edit Product"
                             >
                               <Edit2 className="w-4 h-4" />
