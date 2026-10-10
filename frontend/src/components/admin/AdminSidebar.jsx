@@ -1,18 +1,27 @@
 import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
   Layers,
   ShoppingBag,
-  ArrowLeft,
+  LogOut,
   Store,
   X,
 } from "lucide-react";
 import { useUIStore } from "../../store/ui.store";
+import useAuth from "../../hooks/useAuth";
 
 export const AdminSidebar = () => {
   const { closeAdminSidebar } = useUIStore();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    closeAdminSidebar();
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
@@ -98,15 +107,16 @@ export const AdminSidebar = () => {
         </nav>
       </div>
 
-      {/* Bottom Back to Store */}
+      {/* Bottom Sign Out */}
       <div className="pt-4 border-t border-slate-100">
-        <Link
-          to="/"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Store
-        </Link>
+          <LogOut className="w-4 h-4" />
+          Sign Out
+        </button>
       </div>
     </aside>
   );

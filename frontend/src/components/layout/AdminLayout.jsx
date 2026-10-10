@@ -1,6 +1,6 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
-import { Menu, Store } from "lucide-react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Menu, LogOut } from "lucide-react";
 import AdminSidebar from "../admin/AdminSidebar";
 import AdminNotificationBell from "../admin/AdminNotificationBell";
 import { useUIStore } from "../../store/ui.store";
@@ -8,7 +8,13 @@ import useAuth from "../../hooks/useAuth";
 
 export const AdminLayout = () => {
   const { isAdminSidebarOpen, openAdminSidebar, closeAdminSidebar } = useUIStore();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden">
@@ -52,13 +58,15 @@ export const AdminLayout = () => {
             {/* Live Order Notification Bell */}
             <AdminNotificationBell />
 
-            <Link
-              to="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#ed1d24] hover:text-[#d32f2f] bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 hover:border-rose-600 px-3 py-1.5 rounded-lg transition-all"
+              title="Sign Out"
             >
-              <Store className="w-3.5 h-3.5" />
-              Visit Store
-            </Link>
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
 
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
               <div className="w-8 h-8 rounded-lg bg-[#ed1d24] text-white flex items-center justify-center font-bold text-xs">

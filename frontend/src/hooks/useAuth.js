@@ -21,8 +21,10 @@ export const useAuth = () => {
 
   const login = async (credentials) => {
     const result = await storeLogin(credentials);
-    // Fetch user's cart on successful login
-    fetchCart();
+    // Fetch user's cart on successful login for customer accounts only
+    if (result?.user?.role !== "admin" && result?.user?.role !== "master") {
+      fetchCart();
+    }
     return result;
   };
 
@@ -32,8 +34,10 @@ export const useAuth = () => {
 
   const register = async (userData) => {
     const result = await storeRegister(userData);
-    // Fetch user's cart on successful registration
-    fetchCart();
+    // Fetch user's cart on successful registration for customer accounts only
+    if (result?.user?.role !== "admin" && result?.user?.role !== "master") {
+      fetchCart();
+    }
     return result;
   };
 

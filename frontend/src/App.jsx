@@ -21,7 +21,7 @@ export function App() {
   useEffect(() => {
     const initSession = async () => {
       const user = await getCurrentUser();
-      if (user) {
+      if (user && user.role !== "admin" && user.role !== "master") {
         fetchCart();
       }
     };

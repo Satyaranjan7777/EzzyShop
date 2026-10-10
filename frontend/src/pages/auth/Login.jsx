@@ -17,13 +17,28 @@ const loginSchema = z.object({
 });
 
 export const Login = () => {
-  const { login } = useAuth();
+  const { login, isAuthenticated, user, isAdmin, isMaster } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      if (isAdmin) {
+        navigate("/admin", { replace: true });
+      } else if (isMaster) {
+        navigate("/master/admins", { replace: true });
+      } else if (from !== "/login") {
+        navigate(from, { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, isAdmin, isMaster, navigate, from]);
 
   const {
     register,
@@ -40,8 +55,15 @@ export const Login = () => {
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
-      await login(data);
-      navigate(from, { replace: true });
+      const res = await login(data);
+      const role = res?.user?.role;
+      if (role === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (role === "master") {
+        navigate("/master/admins", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch {
       // Error is toasted in auth store
     } finally {

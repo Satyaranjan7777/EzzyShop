@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 
 export const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading, isInitialized } = useAuth();
+  const { isAuthenticated, isAdmin, isMaster, isLoading, isInitialized } = useAuth();
   const location = useLocation();
 
   if (isLoading || !isInitialized) {
@@ -13,6 +13,14 @@ export const ProtectedRoute = () => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (isMaster) {
+    return <Navigate to="/master/admins" replace />;
   }
 
   return <Outlet />;
